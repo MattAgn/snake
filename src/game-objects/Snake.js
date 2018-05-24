@@ -1,23 +1,23 @@
 class Snake {
   constructor(x, y, squareSize) {
-    this.x = x;
-    this.y = y;
     this.squareSize = squareSize;
-    this.score = 0;
+    this.body = [{x: x, y: y, id: 0}];
+    this.dx = squareSize;
+    this.dy = 0;
+    this.lastId = 0;
   }
 
   // eslint-disable-next-line
-  moveUp = () => { this.y -= this.squareSize; }
-  moveDown = () => { this.y += this.squareSize; }
-  moveRight = () => { this.x += this.squareSize; }
-  moveLeft = () => { this.x -= this.squareSize; }
+  moveUp = () => { this.dy = -this.squareSize; this.dx = 0; }
+  moveDown = () => { this.dy = this.squareSize; this.dx = 0; }
+  moveRight = () => { this.dx = this.squareSize; this.dy = 0; }
+  moveLeft = () => { this.dx = -this.squareSize; this.dy = 0; }
 
   hasReachedTarget = (target) => {
-    const distanceX = this.x - target.x;
-    const distanceY = this.y - target.y;
+    const distanceX = this.body[0].x - target.x;
+    const distanceY = this.body[0].y - target.y;
     const distance = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
-    if (distance <= this.squareSize + target.radius) {
-      this.score += 1;
+    if (distance <= this.squareSize * Math.sqrt(2) + target.radius) {
       return true;
     } 
     return false;

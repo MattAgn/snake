@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
-import { Rect, Text } from 'react-konva';
+import { Rect } from 'react-konva';
 
 class SnakeComp extends Component {
   componentDidUpdate(prevProps) {
@@ -13,13 +13,19 @@ class SnakeComp extends Component {
   render() {
     const { snake } = this.props;
     return (
-      <Rect
-        x={snake.x}
-        y={snake.y}
-        height={snake.squareSize * 2}
-        width={snake.squareSize * 2}
-        fill="#8BC34A"
-      />
+      <React.Fragment>
+        {snake.body.map(bodyPart => (
+          <Rect
+            key={bodyPart.id}
+            x={bodyPart.x}
+            y={bodyPart.y}
+            height={snake.squareSize * 2}
+            width={snake.squareSize * 2}
+            fill="#8BC34A"
+          />
+        ))
+        }
+      </React.Fragment>
     );
   }
 }

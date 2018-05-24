@@ -3,7 +3,6 @@ import { Stage, Layer, Text } from 'react-konva';
 import SnakeComp from './components/SnakeComp';
 import Target from './components/Target';
 import Snake from './game-objects/Snake';
-import Score from './components/Score';
 
 // Constants
 const ARROW_UP = 38;
@@ -16,9 +15,10 @@ class App extends Component {
   state = {
     totalHeight: window.innerHeight,
     totalWidth: window.innerWidth,
+    interval: null,
     elementSize: Math.round(Math.sqrt(
                   Math.pow(window.innerHeight, 2) + 
-                  Math.pow(window.innerWidth,2)) / 150),
+                  Math.pow(window.innerWidth,2)) / 100),
   }
 
   componentDidMount() {
@@ -40,7 +40,7 @@ class App extends Component {
       totalWidth: window.innerWidth,
       elementSize: Math.round(Math.sqrt(
                 Math.pow(window.innerHeight, 2) + 
-                Math.pow(window.innerWidth,2)) / 150),
+                Math.pow(window.innerWidth,2)) / 100),
     });
   }
 
@@ -57,7 +57,28 @@ class App extends Component {
         radius: this.state.elementSize,
       },
       snake: snake,
-    }))
+    }), this.startGame)
+  }
+
+  startGame = () => {
+    const interval = setInterval(this.runGame, 100);
+    this.setState({interval});
+  }
+
+  runGame = () => {
+    const snake = this.state.snake;
+    const cellReached = {
+      x: snake.body[0].x + snake.dx,
+      y: snake.body[0].y + snake.dy,
+      id: snake.lastId ++,
+    };
+    if (snake.hasReachedTarget(this.state.target)) {
+      this.generateNewTarget();
+    } else {
+      snake.body.pop(); // if target not reached, the snake continues
+    };
+    snake.body = [cellReached].concat(snake.body);
+    this.setState(() => ({snake}));
   }
 
   generateNewTarget = () => {
@@ -79,10 +100,7 @@ class App extends Component {
       case ARROW_RIGHT: snake.moveRight(); break;
       default: break;
     }
-    if (snake.hasReachedTarget(this.state.target)) {
-      this.generateNewTarget();
-    };
-    this.setState({ snake });
+    this.setState(() => { snake });
   }
 
   render() {
@@ -94,7 +112,7 @@ class App extends Component {
           <React.Fragment>
             <SnakeComp snake={snake}/>
             <Target {...target}/>
-            <Text text={snake.score.toString()}/>
+            <Text text={(snake.body.length -1).toString()}/>
           </React.Fragment>
           : <Text text="loading"/>}
         </Layer>
