@@ -19,8 +19,8 @@ class SnakeComp extends Component {
             key={bodyPart.id}
             x={bodyPart.x}
             y={bodyPart.y}
-            height={snake.squareSize * 2}
-            width={snake.squareSize * 2}
+            height={snake.squareSize}
+            width={snake.squareSize}
             fill="#8BC34A"
           />
         ))

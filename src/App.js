@@ -5,6 +5,7 @@ import Target from './components/Target';
 import Snake from './game-objects/Snake';
 
 // Constants
+const PAUSE = 32;
 const ARROW_UP = 38;
 const ARROW_LEFT = 37;
 const ARROW_RIGHT = 39;
@@ -16,9 +17,10 @@ class App extends Component {
     totalHeight: window.innerHeight,
     totalWidth: window.innerWidth,
     interval: null,
+    isGamePaused: false,
     elementSize: Math.round(Math.sqrt(
                   Math.pow(window.innerHeight, 2) + 
-                  Math.pow(window.innerWidth,2)) / 100),
+                  Math.pow(window.innerWidth, 2)) / 50),
   }
 
   componentDidMount() {
@@ -28,33 +30,35 @@ class App extends Component {
     window.addEventListener('keydown', this.move);
   }
 
-  getXPosition = x => Math.round(x * this.state.totalHeight);
-  getYPosition = y => Math.round(y * this.state.totalWidth);
+  //TODO: to rectify
+  getXPosition = x => Math.floor(x * Math.floor(this.state.totalWidth -           this.state.totalWidth % this.state.elementSize))
+  getYPosition = y => Math.floor(y * Math.floor(this.state.totalHeight -
+    this.state.totalHeight % this.state.elementSize)) 
   getRandomXPosition = x => this.getXPosition(Math.random());
-  getRandomYPosition = x => this.getXPosition(Math.random());
+  getRandomYPosition = y => this.getYPosition(Math.random());
 
 
   updateSizeCanvas = () => {
-    this.setState({
+    this.setState(() => ({
       totalHeight: window.innerHeight,
       totalWidth: window.innerWidth,
       elementSize: Math.round(Math.sqrt(
                 Math.pow(window.innerHeight, 2) + 
-                Math.pow(window.innerWidth,2)) / 100),
-    });
+                Math.pow(window.innerWidth, 2)) / 50),
+    }));
   }
 
   init = () => {
     const snake = new Snake(
       this.getRandomXPosition(), 
       this.getRandomYPosition(), 
-      this.state.elementSize 
+      this.state.elementSize
     );
     this.setState(prevState => ({
       target: {
-        x: this.getRandomXPosition(), 
-        y: this.getRandomYPosition(), 
-        radius: this.state.elementSize,
+        x: this.getRandomXPosition() + prevState.elementSize / 2, 
+        y: this.getRandomYPosition() + prevState.elementSize / 2, 
+        radius: this.state.elementSize / 2,
       },
       snake: snake,
     }), this.startGame)
@@ -62,45 +66,53 @@ class App extends Component {
 
   startGame = () => {
     const interval = setInterval(this.runGame, 100);
-    this.setState({interval});
+    this.setState(() => ({interval}));
   }
 
   runGame = () => {
-    const snake = this.state.snake;
-    const cellReached = {
-      x: snake.body[0].x + snake.dx,
-      y: snake.body[0].y + snake.dy,
-      id: snake.lastId ++,
-    };
-    if (snake.hasReachedTarget(this.state.target)) {
-      this.generateNewTarget();
-    } else {
-      snake.body.pop(); // if target not reached, the snake continues
-    };
-    snake.body = [cellReached].concat(snake.body);
+    const { snake, target } = this.state;
+    const hasReachedTarget = snake.run(target);
+    if (hasReachedTarget) { this.generateNewTarget(); }
     this.setState(() => ({snake}));
+  }
+
+  pauseGame = () => {
+    let interval = this.state.interval;
+    clearInterval(interval); 
+    interval = null;
+    this.setState(() => {interval});
   }
 
   generateNewTarget = () => {
     this.setState(prevState => ({
       target: {
-        x: this.getRandomXPosition(), 
-        y: this.getRandomYPosition(), 
-        radius: this.state.elementSize,
+        y: this.getRandomYPosition() + prevState.elementSize / 2, 
+        x: this.getRandomXPosition() + prevState.elementSize / 2, 
+        radius: this.state.elementSize / 2,
       },
     }))
   }
 
   move = (event) => {
-    const snake = this.state.snake;
+    let { snake, interval, isGamePaused } = this.state;
     switch(event.keyCode || event.which) {
       case ARROW_DOWN:  snake.moveDown(); break;
       case ARROW_UP:    snake.moveUp(); break;
       case ARROW_LEFT:  snake.moveLeft(); break;
       case ARROW_RIGHT: snake.moveRight(); break;
+      case PAUSE:       
+        if (isGamePaused) {
+          this.startGame();
+          isGamePaused = false;
+        } else {
+          this.pauseGame();
+          isGamePaused = true;
+        }
+        break;  
       default: break;
     }
-    this.setState(() => { snake });
+    console.log(isGamePaused)
+    this.setState(() => ({ snake, isGamePaused }));
   }
 
   render() {
