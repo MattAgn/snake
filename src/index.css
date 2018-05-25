@@ -2,5 +2,23 @@
 
 html, body { width:100%; height:100%; } /* just to be sure these are full screen*/
 
-canvas { display:block; }
+#root{
+  display: flex;
+  height: 100%;
+}
+
+#root > div {
+  height: fit-content;
+  margin: auto;
+  background: #424242;
+}
+
+canvas {
+  margin: auto; 
+  display:block;
+}
+
+body{
+  background: black;
+}
 

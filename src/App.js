@@ -13,14 +13,20 @@ const ARROW_DOWN = 40;
 
 class App extends Component {
 
-  state = {
-    totalHeight: window.innerHeight,
-    totalWidth: window.innerWidth,
-    interval: null,
-    isGamePaused: false,
-    elementSize: Math.round(Math.sqrt(
-                  Math.pow(window.innerHeight, 2) + 
-                  Math.pow(window.innerWidth, 2)) / 50),
+  constructor() {
+    super();
+    this.nbColumns = 34;
+    this.nbRows = 16;
+    const elementSize = Math.round(Math.sqrt(
+      Math.pow(window.innerHeight, 2) + 
+      Math.pow(window.innerWidth, 2)) / 50);
+    this.state = {
+      totalHeight: elementSize * this.nbRows,
+      totalWidth: elementSize * this.nbColumns,
+      elementSize: elementSize,
+      interval: null,
+      isGamePaused: false,
+    } 
   }
 
   componentDidMount() {
@@ -39,13 +45,26 @@ class App extends Component {
 
 
   updateSizeCanvas = () => {
+    const elementSize = Math.round(Math.sqrt(
+      Math.pow(window.innerHeight, 2) + 
+      Math.pow(window.innerWidth, 2)) / 50);
+    const { snake, target } = this.state;
+    if (snake && target) {
+      snake.squareSize = elementSize;
+      target.radius = elementSize / 2;
+      //call updatePosition
+    }
     this.setState(() => ({
-      totalHeight: window.innerHeight,
-      totalWidth: window.innerWidth,
-      elementSize: Math.round(Math.sqrt(
-                Math.pow(window.innerHeight, 2) + 
-                Math.pow(window.innerWidth, 2)) / 50),
-    }));
+      totalHeight: elementSize * this.nbRows,
+      totalWidth: elementSize * this.nbColumns,
+      elementSize,
+      snake,
+      target,
+    })); 
+  }
+
+  updatePosition = () => {
+    //TODO:
   }
 
   init = () => {
@@ -66,7 +85,7 @@ class App extends Component {
 
   startGame = () => {
     const interval = setInterval(this.runGame, 100);
-    this.setState(() => ({interval}));
+    this.setState({interval, isGamePaused: false});
   }
 
   runGame = () => {
@@ -80,7 +99,7 @@ class App extends Component {
     let interval = this.state.interval;
     clearInterval(interval); 
     interval = null;
-    this.setState(() => {interval});
+    this.setState({interval, isGamePaused: true});
   }
 
   generateNewTarget = () => {
@@ -103,16 +122,13 @@ class App extends Component {
       case PAUSE:       
         if (isGamePaused) {
           this.startGame();
-          isGamePaused = false;
         } else {
           this.pauseGame();
-          isGamePaused = true;
         }
         break;  
       default: break;
     }
-    console.log(isGamePaused)
-    this.setState(() => ({ snake, isGamePaused }));
+    this.setState(() => ({ snake }));
   }
 
   render() {
