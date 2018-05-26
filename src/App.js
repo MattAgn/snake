@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Stage, Layer, Text } from 'react-konva';
+import { Stage, Layer } from 'react-konva';
 import SnakeComp from './components/SnakeComp';
 import Target from './components/Target';
 import Snake from './game-objects/Snake';
@@ -21,8 +21,8 @@ class App extends Component {
       Math.pow(window.innerHeight, 2) + 
       Math.pow(window.innerWidth, 2)) / 50);
     this.state = {
-      totalHeight: elementSize * this.nbRows,
-      totalWidth: elementSize * this.nbColumns,
+      boardHeight: elementSize * this.nbRows,
+      boardWidth: elementSize * this.nbColumns,
       elementSize: elementSize,
       interval: null,
       isGamePaused: false,
@@ -37,30 +37,43 @@ class App extends Component {
   }
 
   //TODO: to rectify
-  getXPosition = x => Math.floor(x * Math.floor(this.state.totalWidth -           this.state.totalWidth % this.state.elementSize))
-  getYPosition = y => Math.floor(y * Math.floor(this.state.totalHeight -
-    this.state.totalHeight % this.state.elementSize)) 
-  getRandomXPosition = x => this.getXPosition(Math.random());
-  getRandomYPosition = y => this.getYPosition(Math.random());
+  getRandomXPosition = x => 
+    Math.floor(Math.random() * this.nbColumns) * this.state.elementSize;
+  getRandomYPosition = y => 
+    Math.floor(Math.random() * this.nbRows) * this.state.elementSize;
 
 
   updateSizeCanvas = () => {
-    const elementSize = Math.round(Math.sqrt(
-      Math.pow(window.innerHeight, 2) + 
-      Math.pow(window.innerWidth, 2)) / 50);
-    const { snake, target } = this.state;
-    if (snake && target) {
-      snake.squareSize = elementSize;
-      target.radius = elementSize / 2;
-      //call updatePosition
-    }
-    this.setState(() => ({
-      totalHeight: elementSize * this.nbRows,
-      totalWidth: elementSize * this.nbColumns,
-      elementSize,
-      snake,
-      target,
-    })); 
+    this.setState(prevState => {
+      const newElementSize = Math.round(Math.sqrt(
+        Math.pow(window.innerHeight, 2) + 
+        Math.pow(window.innerWidth, 2)) / 50);
+      const { snake, target } = prevState;
+      let resizedTarget;
+      if (target) {
+        resizedTarget = {
+          radius: newElementSize / 2,
+          x: target.x / prevState.elementSize * newElementSize,
+          y: target.y / prevState.elementSize * newElementSize,
+        }
+      }
+      if (snake) {
+        snake.updatePositionOnResize(
+          prevState.elementSize, 
+          newElementSize,
+          newElementSize * this.nbRows,
+          newElementSize * this.nbColumns);
+      }
+      return(
+        {
+          boardHeight: newElementSize * this.nbRows,
+          boardWidth: newElementSize * this.nbColumns,
+          elementSize : newElementSize,
+          target: resizedTarget,
+          snake,
+        }
+      )
+    })
   }
 
   updatePosition = () => {
@@ -71,7 +84,9 @@ class App extends Component {
     const snake = new Snake(
       this.getRandomXPosition(), 
       this.getRandomYPosition(), 
-      this.state.elementSize
+      this.state.elementSize,
+      this.state.boardHeight,
+      this.state.boardWidth,
     );
     this.setState(prevState => ({
       target: {
@@ -113,7 +128,7 @@ class App extends Component {
   }
 
   move = (event) => {
-    let { snake, interval, isGamePaused } = this.state;
+    let { snake, isGamePaused } = this.state;
     switch(event.keyCode || event.which) {
       case ARROW_DOWN:  snake.moveDown(); break;
       case ARROW_UP:    snake.moveUp(); break;
@@ -134,17 +149,19 @@ class App extends Component {
   render() {
     const { target, snake } = this.state;
     return (
-      <Stage width={this.state.totalWidth} height={this.state.totalHeight}>
-        <Layer>
-          { snake ? 
+      <React.Fragment>
+        { snake ? 
           <React.Fragment>
-            <SnakeComp snake={snake}/>
-            <Target {...target}/>
-            <Text text={(snake.body.length -1).toString()}/>
+            <Stage width={this.state.boardWidth} height={this.state.boardHeight}>
+              <Layer>
+                <Target {...target}/>
+                <SnakeComp snake={snake}/>
+              </Layer>
+            </Stage>
+            <h2> {`Score : ${(snake.body.length -1).toString()}`} </h2>
           </React.Fragment>
-          : <Text text="loading"/>}
-        </Layer>
-      </Stage>
+          : <h2>Loading</h2>}
+      </React.Fragment>
     );
   }
 }
