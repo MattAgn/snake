@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Stage, Layer } from 'react-konva';
 import SnakeComp from './components/SnakeComp';
+import Walls from './components/Walls';
 import Target from './components/Target';
 import Snake from './game-objects/Snake';
 
@@ -88,14 +89,9 @@ class App extends Component {
       this.state.boardHeight,
       this.state.boardWidth,
     );
-    this.setState(prevState => ({
-      target: {
-        x: this.getRandomXPosition() + prevState.elementSize / 2, 
-        y: this.getRandomYPosition() + prevState.elementSize / 2, 
-        radius: this.state.elementSize / 2,
-      },
-      snake: snake,
-    }), this.startGame)
+    this.generateNewWall();
+    this.generateNewTarget();
+    this.setState({ snake }, this.startGame);
   }
 
   startGame = () => {
@@ -104,8 +100,8 @@ class App extends Component {
   }
 
   runGame = () => {
-    const { snake, target } = this.state;
-    const hasReachedTarget = snake.run(target);
+    const { snake, target, walls } = this.state;
+    const hasReachedTarget = snake.run(target, walls);
     if (hasReachedTarget) { this.generateNewTarget(); }
     this.setState(() => ({snake}));
   }
@@ -117,6 +113,7 @@ class App extends Component {
     this.setState({interval, isGamePaused: true});
   }
 
+  // TODO: prevent target and snake for being in wall
   generateNewTarget = () => {
     this.setState(prevState => ({
       target: {
@@ -125,6 +122,20 @@ class App extends Component {
         radius: this.state.elementSize / 2,
       },
     }))
+  }
+
+  generateNewWall = () => {
+    const walls = [];
+    for (let i = 0; i < 8; i++) {
+      const wall = {
+        x: this.getRandomXPosition(),
+        y: this.getRandomYPosition(),
+        squareSize: this.state.elementSize,
+        id: i,
+      }
+      walls.push(wall)
+    }
+    this.setState({ walls });
   }
 
   move = (event) => {
@@ -147,7 +158,7 @@ class App extends Component {
   }
 
   render() {
-    const { target, snake } = this.state;
+    const { target, snake, walls } = this.state;
     return (
       <React.Fragment>
         { snake ? 
@@ -156,6 +167,7 @@ class App extends Component {
               <Layer>
                 <Target {...target}/>
                 <SnakeComp snake={snake}/>
+                <Walls walls={walls}/>
               </Layer>
             </Stage>
             <h2> {`Score : ${(snake.body.length -1).toString()}`} </h2>

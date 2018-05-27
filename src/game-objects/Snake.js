@@ -8,11 +8,32 @@ class Snake {
     this.boardWidth = boardWidth; 
   }
 
-  // eslint-disable-next-line
-  moveUp = () => { this.dy = -this.squareSize; this.dx = 0; }
-  moveDown = () => { this.dy = this.squareSize; this.dx = 0; }
-  moveRight = () => { this.dx = this.squareSize; this.dy = 0; }
-  moveLeft = () => { this.dx = -this.squareSize; this.dy = 0; }
+  moveUp = () => {
+    if (!(this.dy === this.squareSize && this.dx === 0)) {
+      this.dy = -this.squareSize; 
+      this.dx = 0; 
+    } 
+  }
+
+  moveDown = () => {
+    if (!(this.dy === -this.squareSize && this.dx === 0)) {
+      this.dy = this.squareSize; 
+      this.dx = 0; 
+    } 
+  }
+
+  moveRight = () => { 
+    if (!(this.dx === -this.squareSize && this.dy === 0)) {
+      this.dx = this.squareSize;
+      this.dy = 0;
+    }
+  }
+  moveLeft = () => { 
+    if (!(this.dx === this.squareSize && this.dy === 0)) {
+      this.dx = -this.squareSize;
+      this.dy = 0;
+    }
+  }
 
   updatePositionOnResize = (prevElementSize, newElementSize, boardHeight, boardWidth) => {
     this.squareSize = newElementSize;
@@ -51,18 +72,29 @@ class Snake {
     return false;
   }
 
-  checkCollision = () => {
+  checkEatenItself = () => {
     const snakeHead = this.body[0];
     for (let i = 2; i < this.body.length; i++) {
-      if (snakeHead.x === this.body[i].x || snakeHead.y === this.body[i].y) {
-        console.log("eaten", i);
+      if (snakeHead.x === this.body[i].x && snakeHead.y === this.body[i].y) {
+        console.log(snakeHead);
+        console.log("eaten", this.body[i]);
         return true;
       }
     }
     return false;
   }
 
-  run = target => {
+  checkWallCollision = wall => {
+    const snakeHead = this.body[0];
+    for (let wallElement of wall) {
+      if (snakeHead.x === wallElement.x && snakeHead.y === wallElement.y) {
+        return true;
+      }
+    }
+    return false
+  }
+
+  run = (target, wall = []) => {
     const cellReached = {
       x: this.body[0].x + this.dx,
       y: this.body[0].y + this.dy,
@@ -75,8 +107,9 @@ class Snake {
     };
     this.body.map(bodyPart => bodyPart.id ++);
     this.body = [cellReached].concat(this.body);
-    const hasEatenItself = this.checkCollision();
-    if (hasEatenItself) {
+    const hasEatenItself = this.checkEatenItself();
+    const hasHitWall = this.checkWallCollision(wall);
+    if (hasEatenItself || hasHitWall) {
       this.body = [this.body[0]]
       alert("you lost !");
     }
