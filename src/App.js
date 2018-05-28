@@ -18,6 +18,9 @@ class App extends Component {
     super();
     this.nbColumns = 34;
     this.nbRows = 16;
+    this.nbWalls = 8;
+    const savedHighScore = parseInt(localStorage.getItem('highScore'), 10);
+    let highScore = savedHighScore ? savedHighScore : 0;
     const elementSize = Math.round(Math.sqrt(
       Math.pow(window.innerHeight, 2) + 
       Math.pow(window.innerWidth, 2)) / 50);
@@ -25,6 +28,7 @@ class App extends Component {
       boardHeight: elementSize * this.nbRows,
       boardWidth: elementSize * this.nbColumns,
       elementSize: elementSize,
+      highScore: highScore,
       interval: null,
       isGamePaused: false,
     } 
@@ -77,33 +81,36 @@ class App extends Component {
     })
   }
 
-  updatePosition = () => {
-    //TODO:
-  }
 
   init = () => {
-    const snake = new Snake(
-      this.getRandomXPosition(), 
-      this.getRandomYPosition(), 
-      this.state.elementSize,
-      this.state.boardHeight,
-      this.state.boardWidth,
-    );
-    this.generateNewWall();
-    this.generateNewTarget();
-    this.setState({ snake }, this.startGame);
+    const walls = this.generateNewWalls();
+    const snake = this.generateNewSnake(walls);
+    const target = this.generateNewTarget(walls);
+    this.setState({ walls, snake, target }, this.startGame); 
   }
 
   startGame = () => {
-    const interval = setInterval(this.runGame, 100);
+    const interval = setInterval(this.runGame, 120);
     this.setState({interval, isGamePaused: false});
   }
 
   runGame = () => {
-    const { snake, target, walls } = this.state;
+    const { snake, target, walls, highScore } = this.state;
     const hasReachedTarget = snake.run(target, walls);
-    if (hasReachedTarget) { this.generateNewTarget(); }
-    this.setState(() => ({snake}));
+    let newTarget, newHighScore;
+    if (hasReachedTarget) { 
+      newTarget = this.generateNewTarget(this.state.walls);
+      if (snake.body.length > highScore) {
+        newHighScore = snake.body.length - 1;
+        localStorage.setItem('highScore', newHighScore);
+      } else {
+        newHighScore = highScore;
+      } 
+    } else {
+      newTarget = target;
+      newHighScore = highScore;
+    }
+    this.setState(() => ({snake, target: newTarget, highScore: newHighScore}));
   }
 
   pauseGame = () => {
@@ -113,20 +120,9 @@ class App extends Component {
     this.setState({interval, isGamePaused: true});
   }
 
-  // TODO: prevent target and snake for being in wall
-  generateNewTarget = () => {
-    this.setState(prevState => ({
-      target: {
-        y: this.getRandomYPosition() + prevState.elementSize / 2, 
-        x: this.getRandomXPosition() + prevState.elementSize / 2, 
-        radius: this.state.elementSize / 2,
-      },
-    }))
-  }
-
-  generateNewWall = () => {
+  generateNewWalls = () => {
     const walls = [];
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < this.nbWalls; i++) {
       const wall = {
         x: this.getRandomXPosition(),
         y: this.getRandomYPosition(),
@@ -135,7 +131,41 @@ class App extends Component {
       }
       walls.push(wall)
     }
-    this.setState({ walls });
+    return walls
+  }
+
+  generateAvailableCoordinates = walls => {
+    let coordinates = {
+      y: this.getRandomYPosition(), 
+      x: this.getRandomXPosition(),
+    };
+    walls.forEach(wall => {
+      if (wall.x === coordinates.x && wall.y === coordinates.y) {
+        coordinates = this.generateAvailableCoordinates(walls);
+      } 
+    })
+    return coordinates;  
+  }
+
+  generateNewTarget = walls => {
+    const coordinates = this.generateAvailableCoordinates(walls);
+    return ({
+      y: coordinates.y + this.state.elementSize / 2, 
+      x: coordinates.x + this.state.elementSize / 2, 
+      radius: this.state.elementSize / 2,
+    })
+  }
+
+  generateNewSnake = walls => {
+    const coordinates = this.generateAvailableCoordinates(walls);
+    const snake = new Snake(
+      coordinates.x,
+      coordinates.y, 
+      this.state.elementSize,
+      this.state.boardHeight,
+      this.state.boardWidth,
+    );
+    return snake;
   }
 
   move = (event) => {
@@ -158,7 +188,7 @@ class App extends Component {
   }
 
   render() {
-    const { target, snake, walls } = this.state;
+    const { target, snake, walls, highScore } = this.state;
     return (
       <React.Fragment>
         { snake ? 
@@ -170,7 +200,10 @@ class App extends Component {
                 <Walls walls={walls}/>
               </Layer>
             </Stage>
-            <h2> {`Score : ${(snake.body.length -1).toString()}`} </h2>
+            <div className='scores'>
+              <h2> {`Score : ${(snake.body.length -1).toString()}`} </h2>
+              <h2> {`High Score : ${highScore.toString()}`} </h2>
+            </div>
           </React.Fragment>
           : <h2>Loading</h2>}
       </React.Fragment>
