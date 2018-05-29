@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
 import { Rect } from 'react-konva';
 
-class SnakeComp extends Component {
+class SnakeBody extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.snake !== this.props.snake) {
       return true;
@@ -30,4 +30,4 @@ class SnakeComp extends Component {
   }
 }
 
-export default SnakeComp;
+export default SnakeBody;

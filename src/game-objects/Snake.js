@@ -2,7 +2,7 @@ class Snake {
   constructor(x, y, squareSize, boardHeight, boardWidth) {
     this.squareSize = squareSize;
     this.body = [{x: x , y: y, id: 0}];
-    this.dx = squareSize;
+    this.dx = 0;
     this.dy = 0;
     this.boardHeight = boardHeight;
     this.boardWidth = boardWidth; 

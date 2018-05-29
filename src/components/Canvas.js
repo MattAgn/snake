@@ -1,52 +1,18 @@
-import React, { Component } from 'react';
-import { Stage, Layer } from 'react-konva';
-import SnakeBody from './components/SnakeBody';
-import Walls from './components/Walls';
-import Target from './components/Target';
-import Snake from './game-objects/Snake';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-// Constants
-const PAUSE = 32;
-const ARROW_UP = 38;
-const ARROW_LEFT = 37;
-const ARROW_RIGHT = 39;
-const ARROW_DOWN = 40;
-
-class App extends Component {
-
-  constructor() {
-    super();
-    this.nbColumns = 34;
-    this.nbRows = 16;
-    this.nbWalls = 8;
-    const savedHighScore = parseInt(localStorage.getItem('highScore'), 10);
-    let highScore = savedHighScore ? savedHighScore : 0;
-    const elementSize = Math.round(Math.sqrt(
-      Math.pow(window.innerHeight, 2) + 
-      Math.pow(window.innerWidth, 2)) / 50);
-    this.state = {
-      boardHeight: elementSize * this.nbRows,
-      boardWidth: elementSize * this.nbColumns,
-      elementSize: elementSize,
-      highScore: highScore,
-      interval: null,
-      isGamePaused: false,
-    } 
+export default class Canvas extends Component {
+  static propTypes = {
+    prop: PropTypes.object,
   }
 
-  componentDidMount() {
-    this.updateSizeCanvas();
-    this.init();
-    window.addEventListener('resize', this.updateSizeCanvas);
-    window.addEventListener('keydown', this.move);
+  state = {
+    boardHeight: elementSize * this.nbRows,
+    boardWidth: elementSize * this.nbColumns,
+    elementSize: elementSize,
+    interval: null,
+    isGamePaused: false,
   }
-
-  //TODO: to rectify
-  getRandomXPosition = x => 
-    Math.floor(Math.random() * this.nbColumns) * this.state.elementSize;
-  getRandomYPosition = y => 
-    Math.floor(Math.random() * this.nbRows) * this.state.elementSize;
-
 
   updateSizeCanvas = () => {
     this.setState(prevState => {
@@ -188,27 +154,14 @@ class App extends Component {
   }
 
   render() {
-    const { target, snake, walls, highScore } = this.state;
     return (
-      <React.Fragment>
-        { snake ? 
-          <React.Fragment>
-            <Stage width={this.state.boardWidth} height={this.state.boardHeight}>
-              <Layer>
-                <Target {...target}/>
-                <SnakeBody snake={snake}/>
-                <Walls walls={walls}/>
-              </Layer>
-            </Stage>
-            <div className='scores'>
-              <h2> {`Score : ${(snake.body.length -1).toString()}`} </h2>
-              <h2> {`High Score : ${highScore.toString()}`} </h2>
-            </div>
-          </React.Fragment>
-          : <h2>Loading</h2>}
-      </React.Fragment>
-    );
+      <Stage width={this.state.boardWidth} height={this.state.boardHeight}>
+        <Layer>
+          <Target {...target}/>
+          <SnakeBody snake={snake}/>
+          <Walls walls={walls}/>
+        </Layer>
+      </Stage>
+    )
   }
 }
-
-export default App;
