@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Stage, Layer } from 'react-konva';
-import SnakeBody from './components/SnakeBody';
-import Walls from './components/Walls';
-import Target from './components/Target';
-import Snake from './game-objects/Snake';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import Header from './components/Header/Header';
+import Canvas from './components/Canvas/Canvas';
 
-// Constants
+// Constants{ snake ? 
 const PAUSE = 32;
 const ARROW_UP = 38;
 const ARROW_LEFT = 37;
@@ -190,23 +188,12 @@ class App extends Component {
   render() {
     const { target, snake, walls, highScore } = this.state;
     return (
-      <React.Fragment>
-        { snake ? 
-          <React.Fragment>
-            <Stage width={this.state.boardWidth} height={this.state.boardHeight}>
-              <Layer>
-                <Target {...target}/>
-                <SnakeBody snake={snake}/>
-                <Walls walls={walls}/>
-              </Layer>
-            </Stage>
-            <div className='scores'>
-              <h2> {`Score : ${(snake.body.length -1).toString()}`} </h2>
-              <h2> {`High Score : ${highScore.toString()}`} </h2>
-            </div>
-          </React.Fragment>
-          : <h2>Loading</h2>}
-      </React.Fragment>
+      <MuiThemeProvider>
+        <React.Fragment>
+          <Header/>
+          <Canvas/>
+        </React.Fragment>
+      </MuiThemeProvider>
     );
   }
 }
