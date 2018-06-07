@@ -3,7 +3,6 @@
     "rules": {
         "import/prefer-default-export": "off",
         "react/jsx-filename-extension": "off",
-        "react/forbid-prop-types": "off",
         "no-underscore-dangle": "off",
         "no-plusplus": "off"
     }

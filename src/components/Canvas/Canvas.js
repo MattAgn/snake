@@ -1,167 +1,28 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Stage, Layer } from 'react-konva';
+import SnakeBody from './SnakeBody';
+import Target from './Target';
+import Walls from './Walls';
+import Snake from '../../game/Snake';
 
-export default class Canvas extends Component {
-  static propTypes = {
-    prop: PropTypes.object,
-  }
+const Canvas = ({
+  canvasWidth, canvasHeight, target, snake, walls,
+}) => (
+  <Stage width={canvasWidth} height={canvasHeight}>
+    <Layer>
+      <Target {...target} />
+      <SnakeBody snake={snake} />
+      <Walls walls={walls} />
+    </Layer>
+  </Stage>
+);
 
-  state = {
-    boardHeight: elementSize * this.nbRows,
-    boardWidth: elementSize * this.nbColumns,
-    elementSize: elementSize,
-    interval: null,
-    isGamePaused: false,
-  }
-
-  updateSizeCanvas = () => {
-    this.setState(prevState => {
-      const newElementSize = Math.round(Math.sqrt(
-        Math.pow(window.innerHeight, 2) + 
-        Math.pow(window.innerWidth, 2)) / 50);
-      const { snake, target } = prevState;
-      let resizedTarget;
-      if (target) {
-        resizedTarget = {
-          radius: newElementSize / 2,
-          x: target.x / prevState.elementSize * newElementSize,
-          y: target.y / prevState.elementSize * newElementSize,
-        }
-      }
-      if (snake) {
-        snake.updatePositionOnResize(
-          prevState.elementSize, 
-          newElementSize,
-          newElementSize * this.nbRows,
-          newElementSize * this.nbColumns);
-      }
-      return(
-        {
-          boardHeight: newElementSize * this.nbRows,
-          boardWidth: newElementSize * this.nbColumns,
-          elementSize : newElementSize,
-          target: resizedTarget,
-          snake,
-        }
-      )
-    })
-  }
-
-
-  init = () => {
-    const walls = this.generateNewWalls();
-    const snake = this.generateNewSnake(walls);
-    const target = this.generateNewTarget(walls);
-    this.setState({ walls, snake, target }, this.startGame); 
-  }
-
-  startGame = () => {
-    const interval = setInterval(this.runGame, 120);
-    this.setState({interval, isGamePaused: false});
-  }
-
-  runGame = () => {
-    const { snake, target, walls, highScore } = this.state;
-    const hasReachedTarget = snake.run(target, walls);
-    let newTarget, newHighScore;
-    if (hasReachedTarget) { 
-      newTarget = this.generateNewTarget(this.state.walls);
-      if (snake.body.length > highScore) {
-        newHighScore = snake.body.length - 1;
-        localStorage.setItem('highScore', newHighScore);
-      } else {
-        newHighScore = highScore;
-      } 
-    } else {
-      newTarget = target;
-      newHighScore = highScore;
-    }
-    this.setState(() => ({snake, target: newTarget, highScore: newHighScore}));
-  }
-
-  pauseGame = () => {
-    let interval = this.state.interval;
-    clearInterval(interval); 
-    interval = null;
-    this.setState({interval, isGamePaused: true});
-  }
-
-  generateNewWalls = () => {
-    const walls = [];
-    for (let i = 0; i < this.nbWalls; i++) {
-      const wall = {
-        x: this.getRandomXPosition(),
-        y: this.getRandomYPosition(),
-        squareSize: this.state.elementSize,
-        id: i,
-      }
-      walls.push(wall)
-    }
-    return walls
-  }
-
-  generateAvailableCoordinates = walls => {
-    let coordinates = {
-      y: this.getRandomYPosition(), 
-      x: this.getRandomXPosition(),
-    };
-    walls.forEach(wall => {
-      if (wall.x === coordinates.x && wall.y === coordinates.y) {
-        coordinates = this.generateAvailableCoordinates(walls);
-      } 
-    })
-    return coordinates;  
-  }
-
-  generateNewTarget = walls => {
-    const coordinates = this.generateAvailableCoordinates(walls);
-    return ({
-      y: coordinates.y + this.state.elementSize / 2, 
-      x: coordinates.x + this.state.elementSize / 2, 
-      radius: this.state.elementSize / 2,
-    })
-  }
-
-  generateNewSnake = walls => {
-    const coordinates = this.generateAvailableCoordinates(walls);
-    const snake = new Snake(
-      coordinates.x,
-      coordinates.y, 
-      this.state.elementSize,
-      this.state.boardHeight,
-      this.state.boardWidth,
-    );
-    return snake;
-  }
-
-  move = (event) => {
-    let { snake, isGamePaused } = this.state;
-    switch(event.keyCode || event.which) {
-      case ARROW_DOWN:  snake.moveDown(); break;
-      case ARROW_UP:    snake.moveUp(); break;
-      case ARROW_LEFT:  snake.moveLeft(); break;
-      case ARROW_RIGHT: snake.moveRight(); break;
-      case PAUSE:       
-        if (isGamePaused) {
-          this.startGame();
-        } else {
-          this.pauseGame();
-        }
-        break;  
-      default: break;
-    }
-    this.setState(() => ({ snake }));
-  }
-
-  render() {
-    return (
-      <Stage width={this.state.boardWidth} height={this.state.boardHeight}>
-        <Layer>
-          <Target {...target}/>
-          <SnakeBody snake={snake}/>
-          <Walls walls={walls}/>
-        </Layer>
-      </Stage>
-    )
-  }
-}
+// TODO: change object
+Canvas.propTypes = {
+  canvasHeight: PropTypes.number.isRequired,
+  canvasWidth: PropTypes.number.isRequired,
+  snake: PropTypes.instanceOf(Snake).isRequired,
+  walls: PropTypes.object.isRequired,
+  target: PropTypes.object.isRequired,
+};

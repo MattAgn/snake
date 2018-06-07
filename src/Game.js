@@ -1,18 +1,6 @@
 import React, { Component } from 'react';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Header from './components/Header/Header';
-import Canvas from './components/Canvas/Canvas';
-import Menu from './components/Menu/Menu';
-import Snake from './game/Snake';
 
-// Constants{ snake ? 
-const PAUSE = 32;
-const ARROW_UP = 38;
-const ARROW_LEFT = 37;
-const ARROW_RIGHT = 39;
-const ARROW_DOWN = 40;
-
-class App extends Component {
+export default class Game extends Component {
 
   constructor() {
     super();
@@ -188,15 +176,13 @@ class App extends Component {
   }
 
   render() {
+    const { children } = this.props;
     const { target, snake, walls, highScore } = this.state;
-    return (
-      <MuiThemeProvider>
-        <React.Fragment>
-          <Menu/>
-        </React.Fragment>
-      </MuiThemeProvider>
-    );
+    return children({
+      target,
+      snake,
+      walls,
+      hightScore
+    });
   }
 }
-
-export default App;
