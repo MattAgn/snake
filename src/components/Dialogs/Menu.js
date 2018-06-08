@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import RaisedButton from 'material-ui/RaisedButton';
 // import PropTypes from 'prop-types';
-import { Modal } from '../../elements';
+import { Modal } from '../../utilities/components';
 import { primaryColor } from '../../utilities/styling';
 
 const modalStyle = {

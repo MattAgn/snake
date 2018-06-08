@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { Portal } from '../utilities/components';
-import { elevation, absolute, fillParent, flexCenter } from '../utilities/styling';
+import Portal from './Portal';
+import { elevation, absolute, fillParent, flexCenter } from '../styling';
 
 const ModalBackground = styled.div`
   ${absolute({})};

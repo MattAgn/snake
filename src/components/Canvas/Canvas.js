@@ -4,7 +4,7 @@ import { Stage, Layer } from 'react-konva';
 import SnakeBody from './SnakeBody';
 import Target from './Target';
 import Walls from './Walls';
-import Snake from '../../game/Snake';
+import Snake from '../../Snake';
 
 const Canvas = ({
   canvasWidth, canvasHeight, target, snake, walls,
