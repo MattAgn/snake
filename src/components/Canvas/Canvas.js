@@ -12,8 +12,8 @@ const Canvas = ({
   <Stage width={canvasWidth} height={canvasHeight}>
     <Layer>
       <Target {...target} />
-      <SnakeBody snake={snake} />
-      <Walls walls={walls} />
+      {snake && <SnakeBody snake={snake} />}
+      {walls && <Walls walls={walls} />}
     </Layer>
   </Stage>
 );
@@ -26,3 +26,5 @@ Canvas.propTypes = {
   walls: PropTypes.object.isRequired,
   target: PropTypes.object.isRequired,
 };
+
+export default Canvas;

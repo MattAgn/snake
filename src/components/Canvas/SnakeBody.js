@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
-import { Rect } from 'react-konva';
+import { Rect, Text } from 'react-konva';
 
 class SnakeBody extends Component {
   componentDidUpdate(prevProps) {
@@ -23,8 +23,7 @@ class SnakeBody extends Component {
             width={snake.squareSize}
             fill="#8BC34A"
           />
-        ))
-        }
+        ))}
       </React.Fragment>
     );
   }

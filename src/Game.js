@@ -1,4 +1,12 @@
 import React, { Component } from 'react';
+import Snake from './game/Snake';
+
+// Constants{ snake ? 
+const PAUSE = 32;
+const ARROW_UP = 38;
+const ARROW_LEFT = 37;
+const ARROW_RIGHT = 39;
+const ARROW_DOWN = 40;
 
 export default class Game extends Component {
 
@@ -13,8 +21,8 @@ export default class Game extends Component {
       Math.pow(window.innerHeight, 2) + 
       Math.pow(window.innerWidth, 2)) / 50);
     this.state = {
-      boardHeight: elementSize * this.nbRows,
-      boardWidth: elementSize * this.nbColumns,
+      canvasHeight: elementSize * this.nbRows,
+      canvasWidth: elementSize * this.nbColumns,
       elementSize: elementSize,
       highScore: highScore,
       interval: null,
@@ -59,8 +67,8 @@ export default class Game extends Component {
       }
       return(
         {
-          boardHeight: newElementSize * this.nbRows,
-          boardWidth: newElementSize * this.nbColumns,
+          canvasHeight: newElementSize * this.nbRows,
+          canvasWidth: newElementSize * this.nbColumns,
           elementSize : newElementSize,
           target: resizedTarget,
           snake,
@@ -150,8 +158,8 @@ export default class Game extends Component {
       coordinates.x,
       coordinates.y, 
       this.state.elementSize,
-      this.state.boardHeight,
-      this.state.boardWidth,
+      this.state.canvasHeight,
+      this.state.canvasWidth,
     );
     return snake;
   }
@@ -177,12 +185,16 @@ export default class Game extends Component {
 
   render() {
     const { children } = this.props;
-    const { target, snake, walls, highScore } = this.state;
+    const { target, snake, walls, highScore, canvasHeight, canvasWidth } = this.state;
+    const score = snake ? snake.body.length - 1 : 0;
     return children({
       target,
       snake,
       walls,
-      hightScore
+      highScore,
+      canvasHeight,
+      canvasWidth,
+      score,
     });
   }
 }
