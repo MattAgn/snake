@@ -9,7 +9,7 @@ const modalStyle = {
   padding: '2%',
   textAlign: 'center',
   width: 'fit-content(90%)',
-  minWidth: '40%',
+  minWidth: '36%',
   height: 'fit-content',
 };
 
@@ -51,6 +51,7 @@ export default class Menu extends Component {
     super();
     console.log('yo');
   }
+
 
   render() {
     return (
