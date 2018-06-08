@@ -18,10 +18,10 @@ const ModalContainer = styled.div`
   padding: 1%;
 `;
 
-const Modal = ({ children, style }) => (
+const Modal = ({ children, className }) => (
   <Portal>
     <ModalBackground>
-      <ModalContainer style={{ ...style }}>
+      <ModalContainer className={className}>
         { children }
       </ModalContainer>
     </ModalBackground>

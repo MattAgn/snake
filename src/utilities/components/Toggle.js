@@ -5,6 +5,10 @@ export default class Toggle extends Component {
     on: false,
   }
 
+  static getDerivatedStateFromProps() {
+    
+  }
+
   toggle = () => {
     this.setState(prevState => ({on: !prevState.on}))
   }
