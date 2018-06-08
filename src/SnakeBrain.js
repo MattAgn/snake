@@ -1,4 +1,4 @@
-class Snake {
+class SnakeBrain {
   constructor(x, y, squareSize, boardHeight, boardWidth) {
     this.squareSize = squareSize;
     this.body = [{x: x , y: y, id: 0}];
@@ -127,4 +127,4 @@ class Snake {
   
 }
 
-export default Snake;
+export default SnakeBrain;

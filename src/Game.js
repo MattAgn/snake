@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Snake from './Snake';
+import Snake from './SnakeBrain';
 
 // Constants{ snake ? 
 const PAUSE = 32;
