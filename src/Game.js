@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import Snake from './SnakeBrain';
 
 // Constants{ snake ? 
@@ -15,6 +15,7 @@ export default class Game extends Component {
     this.nbColumns = 34;
     this.nbRows = 16;
     this.wallsDifficulty = {easy: 0, medium: 7, hell: 15};
+    //TODO: highscore per difficulty
     const savedHighScore = parseInt(localStorage.getItem('highScore'), 10);
     let highScore = savedHighScore ? savedHighScore : 0;
     const elementSize = Math.round(Math.sqrt(
@@ -26,24 +27,49 @@ export default class Game extends Component {
       elementSize: elementSize,
       highScore: highScore,
       interval: null,
-      isGamePaused: false,
       nbWalls: this.wallsDifficulty["medium"],
+      isGamePaused: true,
+      isMenuOpened: true,
+      isGameOver: false,
     } 
   }
 
   componentDidMount() {
-    this.updateSizeCanvas();
     this.init();
     window.addEventListener('resize', this.updateSizeCanvas);
     window.addEventListener('keydown', this.move);
   }
 
-  handleClickDifficulty = value => e => {
-    e.preventDefault();
+  handleClickSettings = () => {
+    if (this.state.isMenuOpened) {
+      this.setState({
+        isMenuOpened: false,
+        isGamePaused: !this.state.isGamePaused,
+        isGameOver: false,
+      }, this.startGame)
+    } else {
+      this.setState({
+        isMenuOpened: true,
+        isGamePaused: true,
+        isGameOver: false,
+      })
+    }
+  }
+
+  handleClickRetry = () => {
+    this.setState({isGameOver: false}, this.generateNewGame);
+  }
+
+  handleClickPlay = () => {
+    this.pauseGame();
+  }
+
+  handleClickDifficulty = value => () => {
     this.setState({ 
       nbWalls: this.wallsDifficulty[value]
     }, this.init);
   }
+
 
   //TODO: to rectify
   getRandomXPosition = x => 
@@ -57,14 +83,22 @@ export default class Game extends Component {
       const newElementSize = Math.round(Math.sqrt(
         Math.pow(window.innerHeight, 2) + 
         Math.pow(window.innerWidth, 2)) / 50);
-      const { snake, target } = prevState;
-      let resizedTarget;
+      const { snake, target, walls } = prevState;
+      let resizedTarget, resizedWalls;
       if (target) {
         resizedTarget = {
           radius: newElementSize / 2,
           x: target.x / prevState.elementSize * newElementSize,
           y: target.y / prevState.elementSize * newElementSize,
         }
+      }
+      if (walls) {
+        resizedWalls = walls.map(wall => ({
+          id: wall.id,
+          x: wall.x / prevState.elementSize * newElementSize,
+          y: wall.y / prevState.elementSize * newElementSize,
+          squareSize: newElementSize,
+        }))
       }
       if (snake) {
         snake.updatePositionOnResize(
@@ -79,6 +113,7 @@ export default class Game extends Component {
           canvasWidth: newElementSize * this.nbColumns,
           elementSize : newElementSize,
           target: resizedTarget,
+          walls: resizedWalls,
           snake,
         }
       )
@@ -90,7 +125,7 @@ export default class Game extends Component {
     const walls = this.generateNewWalls();
     const snake = this.generateNewSnake(walls);
     const target = this.generateNewTarget(walls);
-    this.setState({ walls, snake, target }, this.startGame); 
+    this.setState({ walls, snake, target }); 
   }
 
   startGame = () => {
@@ -98,9 +133,15 @@ export default class Game extends Component {
     this.setState({interval, isGamePaused: false});
   }
 
+  generateNewGame = () => {
+    this.init();
+    this.startGame();
+  }
+  
+
   runGame = () => {
     const { snake, target, walls, highScore } = this.state;
-    const hasReachedTarget = snake.run(target, walls);
+    const { hasReachedTarget, hasLost } = snake.run(target, walls);
     let newTarget, newHighScore;
     if (hasReachedTarget) { 
       newTarget = this.generateNewTarget(this.state.walls);
@@ -114,7 +155,13 @@ export default class Game extends Component {
       newTarget = target;
       newHighScore = highScore;
     }
-    this.setState(() => ({snake, target: newTarget, highScore: newHighScore}));
+    if (hasLost) {
+      this.pauseGame();
+      this.setState(() => ({isGameOver: true}));  
+    }
+    else {
+      this.setState(() => ({snake, target: newTarget, highScore: newHighScore}));
+    }
   }
 
   pauseGame = () => {
@@ -193,7 +240,17 @@ export default class Game extends Component {
 
   render() {
     const { children } = this.props;
-    const { target, snake, walls, highScore, canvasHeight, canvasWidth } = this.state;
+    const { 
+      target, 
+      snake, 
+      walls, 
+      highScore, 
+      canvasHeight, 
+      canvasWidth, 
+      isMenuOpened, 
+      isGameOver,
+      isGamePaused, 
+    } = this.state;
     const score = snake ? snake.body.length - 1 : 0;
     return children({
       target,
@@ -203,7 +260,13 @@ export default class Game extends Component {
       canvasHeight,
       canvasWidth,
       score,
+      isMenuOpened,
+      isGameOver,
+      isGamePaused,
+      handleClickPlay: this.handleClickPlay,
+      handleClickRetry: this.handleClickRetry,
       handleClickDifficulty: this.handleClickDifficulty,
+      handleClickSettings: this.handleClickSettings,
     });
   }
 }

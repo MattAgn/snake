@@ -1,97 +1,76 @@
-import React, { Component } from 'react';
+import React from 'react';
+import styled from 'styled-components';
+import { IconButton } from 'material-ui';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
-import IconButton from 'material-ui/IconButton';
-import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
-import RetryIcon from "material-ui/svg-icons/av/replay";
+import RetryIcon from 'material-ui/svg-icons/av/replay';
+// import PropTypes from 'prop-types';
+import { Dialog, DialogTitle } from './Dialog';
+import { primaryColor, grey } from '../../utilities/styling';
+
+
+const ScoresRow = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin: 7%;
+`;
+
+const ScoreItem = styled.h2`
+  font-weight: 400;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 4% 0;
+  width: fit-content;
+  min-width: 40%;
+  width: 100%;
+`;
 
 const styles = {
-  settingName: {
-    margin: '5vh 0px 0px 0px', 
-    color:'black', 
-    fontWeight: '400', 
-    marginRight: '3%',
-    display: 'inline-block'
-  },
-  settingRow: {
-    display: 'flex',
-    alignItems: 'baseline',
+  button: {
+    height: 125,
+    width: 125,
+    padding: '0',
+    margin: '5%',
+    borderRadius: 5,
+    borderStyle: 'solid',
+    borderWidth: 3,
   },
   icon: {
-    width: 30,
-    height: 30,
+    height: 100,
+    width: 100,
   },
-  button: {
-    height: '70',
-    width: '70',
-    padding: '16',
-    marginLeft: '10',
-  },
-}
+};
 
-class MySettings extends Component {
-  // eslint-disable-next-line 
-  state = {
-    open: true,
-  };
 
-  handleOpen = () => {
-    this.setState({open: true});
-  };
-
-  handleClose = () => {
-    this.setState({open: false});
-  };
-
-  handleSave = () => {
-    this.props.handleSave();
-    this.handleClose();
-  }
-
-  render() {
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onClick={this.handleClose}
-      />,
-      <FlatButton
-        label="Save"
-        primary={true}
-        keyboardFocused={true}
-        onClick={this.handleSave}
-      />,
-    ];
-
-    return (
-      <React.Fragment>
-        <IconButton
-        disableKeyboardFocus 
-        tooltip="Settings" 
-        onClick={this.handleOpen} 
-        style={styles.buttonStyle}
-        iconStyle={styles.iconStyle}>
-          <Settings color="#E0E0E0"/>
-        </IconButton>
-        <Dialog
-          title="Settings"
-          actions={actions}
-          modal={true}
-          open={this.state.open}
-          style={{color:'black'}}>
-          {/* //TODO: add score and congrats if high score */}
-        <IconButton>
-          <SettingsIcon/>
-        </IconButton>
-        <IconButton>
-          <RetryIcon/>
-        </IconButton>
-        </Dialog>
-      </React.Fragment>
-    )
-  }
-}
-
+const GameOver = ({
+  score, highScore, onClickRetry, onClickSettings,
+}) => (
+  <Dialog>
+    <DialogTitle>Game Over !</DialogTitle>
+    <ScoresRow>
+      <ScoreItem>Score: {score}</ScoreItem>
+      <ScoreItem>High Score: {highScore}</ScoreItem>
+    </ScoresRow>
+    <ButtonContainer>
+      <IconButton
+        style={{ ...styles.button, borderColor: `${primaryColor}` }}
+        iconStyle={styles.icon}
+        onClick={onClickRetry}
+      >
+        <RetryIcon color={primaryColor} />
+      </IconButton>
+      <IconButton
+        style={{ ...styles.button, borderColor: `${grey}` }}
+        iconStyle={styles.icon}
+        onClick={onClickSettings}
+      >
+        <SettingsIcon color={grey} />
+      </IconButton>
+    </ButtonContainer>
+  </Dialog>
+);
 
 export default GameOver;
+

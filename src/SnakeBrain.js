@@ -2,7 +2,6 @@ class SnakeBrain {
   constructor(x, y, squareSize, boardHeight, boardWidth) {
     this.squareSize = squareSize;
     this.body = [{x: x , y: y, id: 0}];
-    this.speed = this.squareSize;
     this.dx = 0;
     this.dy = 0; 
     this.boardHeight = boardHeight;
@@ -42,6 +41,8 @@ class SnakeBrain {
     this.squareSize = newElementSize;
     this.boardHeight = boardHeight;
     this.boardWidth = boardWidth;
+    this.dx = this.lastMove.x * newElementSize;
+    this.dy = this.lastMove.y * newElementSize;
     this.body = this.body.map(bodyPart => ({
       x: bodyPart.x / prevElementSize * newElementSize,
       y: bodyPart.y / prevElementSize * newElementSize,
@@ -99,8 +100,8 @@ class SnakeBrain {
     let move = this.moves.shift();
     if (move) {
       this.lastMove = move;
-      this.dx = this.speed * move.x;
-      this.dy = this.speed * move.y;
+      this.dx = this.squareSize * move.x;
+      this.dy = this.squareSize * move.y;
     } 
     const cellReached = {
       x: this.body[0].x + this.dx,
@@ -116,12 +117,9 @@ class SnakeBrain {
     this.body = [cellReached].concat(this.body);
     const hasEatenItself = this.checkEatenItself();
     const hasHitWall = this.checkWallCollision(wall);
-    if (hasEatenItself || hasHitWall) {
-      alert(`you lost with a score of : ${this.body.length - 1} !`);
-      this.body = [this.body[0]]
-      }
+    const hasLost = (hasHitWall || hasEatenItself );
     this.handleBorderCase();
-    return hasReachedTarget;
+    return { hasReachedTarget, hasLost };
   }
 
   

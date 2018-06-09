@@ -3,14 +3,15 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import IconButton from 'material-ui/IconButton';
+import PlayArrowIcon from 'material-ui/svg-icons/av/play-arrow';
+import PauseIcon from 'material-ui/svg-icons/av/pause';
 
-import { lightGrey } from '../../utilities/styling';
-import { Toggle } from '../../utilities/components';
+import { lightGrey, absolute } from '../../utilities/styling';
 import Menu from '../Dialogs/Menu';
 
 const Row = styled.div`
   display: flex;
-  margin: 3% auto 0 auto;
+  margin: 2% auto 0 auto;
   width: 95%;
   justify-content: center;
   position: relative;
@@ -25,14 +26,18 @@ const Information = styled.div`
   margin: 0 5%;
 `;
 
+const ButtonsContainer = styled.div`
+  ${absolute({ y: 'top', x: 'right' })};
+  display: flex;
+  padding: 0 2%;
+`;
+
 const styles = {
   button: {
     height: 30,
     width: 30,
     padding: 0,
-    position: 'absolute',
-    top: '0',
-    right: '0',
+    margin: '0 10%',
   },
   icon: {
     height: 30,
@@ -40,24 +45,35 @@ const styles = {
   },
 };
 
-const Header = ({ score, highScore, ...settingsProps }) => (
+const Header = ({
+  score, highScore, isMenuOpened, isGamePaused, onClickPlay, onClickSettings, ...settingsProps
+}) => (
   <Row>
     <Information>Score : {score}</Information>
     <Information>High Score : {highScore}</Information>
-    <Toggle>
-      {({ toggle, on }) => (
-        <IconButton style={styles.button} iconStyle={styles.icon} onClick={toggle}>
-          <SettingsIcon color={lightGrey} />
-          { on && <Menu toggle={toggle} {...settingsProps} />}
-        </IconButton>
-      )}
-    </Toggle>
+    <ButtonsContainer>
+
+      <IconButton
+        style={styles.button}
+        iconStyle={styles.icon}
+        onClick={onClickPlay}
+      >
+        { isGamePaused ?
+          <PlayArrowIcon color={lightGrey} />
+          : <PauseIcon color={lightGrey} />}
+      </IconButton>
+      <IconButton style={styles.button} iconStyle={styles.icon} onClick={onClickSettings} >
+        <SettingsIcon color={lightGrey} />
+      </IconButton>
+    </ButtonsContainer>
+    { isMenuOpened && <Menu {...settingsProps} onClickSettings={onClickSettings} />}
   </Row>
 );
 
 Header.propTypes = {
   score: PropTypes.number.isRequired,
   highScore: PropTypes.number.isRequired,
+  isMenuOpened: PropTypes.bool.isRequired,
 };
 
 export default Header;

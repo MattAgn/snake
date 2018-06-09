@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
-import { Rect, Text } from 'react-konva';
+import { Rect } from 'react-konva';
 
 class SnakeBody extends Component {
   componentDidUpdate(prevProps) {

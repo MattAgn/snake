@@ -3,17 +3,9 @@ import styled from 'styled-components';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 // import PropTypes from 'prop-types';
-import { Modal } from '../../utilities/components';
+import { Dialog, DialogTitle } from './Dialog';
 import { primaryColor } from '../../utilities/styling';
 
-const MenuContainer = styled(Modal)`
-  padding: 2%;
-  text-align: center;
-  min-width: 36%;
-  width: fit-content;
-  height: fit-content;
-  position: relative;
-`;
 
 const SettingRow = styled.div`
   margin: 7% auto;
@@ -36,10 +28,6 @@ const ButtonRow = styled.div`
 const SettingTitle = styled.h3`
   display: block;
   margin-bottom: 1%;
-`;
-
-const GameName = styled.h1`
-  font-weight: 400;
 `;
 
 const PlayButtonRow = styled.div`
@@ -71,10 +59,10 @@ export default class Menu extends Component {
 
 
   render() {
-    const { toogle, onClickDifficulty } = this.props;
+    const { onClickSettings, onClickDifficulty } = this.props;
     return (
-      <MenuContainer>
-        <GameName>Snake Game</GameName>
+      <Dialog>
+        <DialogTitle>Snake Game</DialogTitle>
 
         <SettingRow>
           <SettingTitle> Player Mode</SettingTitle>
@@ -120,10 +108,10 @@ export default class Menu extends Component {
             keyboardFocused
             primary
             labelStyle={styles.labelPlayButton}
-            onClick={toogle}
+            onClick={onClickSettings}
           />
         </PlayButtonRow>
-      </MenuContainer>
+      </Dialog>
     );
   }
 }
