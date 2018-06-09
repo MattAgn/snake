@@ -48,7 +48,7 @@ const Header = ({ score, highScore, ...settingsProps }) => (
       {({ toggle, on }) => (
         <IconButton style={styles.button} iconStyle={styles.icon} onClick={toggle}>
           <SettingsIcon color={lightGrey} />
-          { on && <Menu onClick={toggle} />}
+          { on && <Menu toggle={toggle} {...settingsProps} />}
         </IconButton>
       )}
     </Toggle>

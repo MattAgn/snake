@@ -51,6 +51,7 @@ const PlayButtonRow = styled.div`
 const styles = {
   buttons: {
     margin: '0 5%',
+    color: 'black',
   },
   labelPlayButton: {
     fontWeight: '400',
@@ -70,6 +71,7 @@ export default class Menu extends Component {
 
 
   render() {
+    const { toogle, onClickDifficulty } = this.props;
     return (
       <MenuContainer>
         <GameName>Snake Game</GameName>
@@ -93,9 +95,22 @@ export default class Menu extends Component {
         <SettingRow>
           <SettingTitle> Difficulty</SettingTitle>
           <ButtonRow>
-            <RaisedButton style={styles.buttons}>Easy</RaisedButton>
-            <RaisedButton style={styles.buttons} backgroundColor={primaryColor}>Medium</RaisedButton>
-            <RaisedButton style={styles.buttons}>Hell</RaisedButton>
+            <RaisedButton
+              label="Easy"
+              style={styles.buttons}
+              onClick={onClickDifficulty('easy')}
+            />
+            <RaisedButton
+              label="Medium"
+              style={styles.buttons}
+              backgroundColor={primaryColor}
+              onClick={onClickDifficulty('medium')}
+            />
+            <RaisedButton
+              label="Hell"
+              style={styles.buttons}
+              onClick={onClickDifficulty('hell')}
+            />
           </ButtonRow>
         </SettingRow>
 
@@ -105,6 +120,7 @@ export default class Menu extends Component {
             keyboardFocused
             primary
             labelStyle={styles.labelPlayButton}
+            onClick={toogle}
           />
         </PlayButtonRow>
       </MenuContainer>

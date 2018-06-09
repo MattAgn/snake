@@ -14,7 +14,7 @@ export default class Game extends Component {
     super();
     this.nbColumns = 34;
     this.nbRows = 16;
-    this.nbWalls = 8;
+    this.wallsDifficulty = {easy: 0, medium: 7, hell: 15};
     const savedHighScore = parseInt(localStorage.getItem('highScore'), 10);
     let highScore = savedHighScore ? savedHighScore : 0;
     const elementSize = Math.round(Math.sqrt(
@@ -27,6 +27,7 @@ export default class Game extends Component {
       highScore: highScore,
       interval: null,
       isGamePaused: false,
+      nbWalls: this.wallsDifficulty["medium"],
     } 
   }
 
@@ -35,6 +36,13 @@ export default class Game extends Component {
     this.init();
     window.addEventListener('resize', this.updateSizeCanvas);
     window.addEventListener('keydown', this.move);
+  }
+
+  handleClickDifficulty = value => e => {
+    e.preventDefault();
+    this.setState({ 
+      nbWalls: this.wallsDifficulty[value]
+    }, this.init);
   }
 
   //TODO: to rectify
@@ -118,7 +126,7 @@ export default class Game extends Component {
 
   generateNewWalls = () => {
     const walls = [];
-    for (let i = 0; i < this.nbWalls; i++) {
+    for (let i = 0; i < this.state.nbWalls; i++) {
       const wall = {
         x: this.getRandomXPosition(),
         y: this.getRandomYPosition(),
@@ -195,6 +203,7 @@ export default class Game extends Component {
       canvasHeight,
       canvasWidth,
       score,
+      handleClickDifficulty: this.handleClickDifficulty,
     });
   }
 }
