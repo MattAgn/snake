@@ -14,7 +14,7 @@ export default class Game extends Component {
     super();
     this.nbColumns = 34;
     this.nbRows = 16;
-    this.wallsDifficulty = {easy: 0, medium: 7, hell: 15};
+    this.wallsDifficulty = [0, 7, 15];
     //TODO: highscore per difficulty
     const savedHighScore = parseInt(localStorage.getItem('highScore'), 10);
     let highScore = savedHighScore ? savedHighScore : 0;
@@ -27,7 +27,8 @@ export default class Game extends Component {
       elementSize: elementSize,
       highScore: highScore,
       interval: null,
-      nbWalls: this.wallsDifficulty["medium"],
+      difficulty: 1,
+      nbWalls: this.wallsDifficulty[1],
       isGamePaused: true,
       isMenuOpened: true,
       isGameOver: false,
@@ -69,7 +70,8 @@ export default class Game extends Component {
   }
 
   handleClickDifficulty = value => () => {
-    this.setState({ 
+    this.setState({
+      difficulty: value, 
       nbWalls: this.wallsDifficulty[value]
     }, this.init);
   }
@@ -244,7 +246,8 @@ export default class Game extends Component {
       walls, 
       highScore, 
       canvasHeight, 
-      canvasWidth, 
+      canvasWidth,
+      difficulty, 
       isMenuOpened, 
       isGameOver,
       isGamePaused, 
@@ -258,6 +261,7 @@ export default class Game extends Component {
       canvasHeight,
       canvasWidth,
       score,
+      difficulty,
       isMenuOpened,
       isGameOver,
       isGamePaused,

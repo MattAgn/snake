@@ -39,7 +39,6 @@ const PlayButtonRow = styled.div`
 const styles = {
   buttons: {
     margin: '0 5%',
-    color: 'black',
   },
   labelPlayButton: {
     fontWeight: '400',
@@ -48,18 +47,15 @@ const styles = {
 
 
 export default class Menu extends Component {
-  // static propTypes = {
-  //   prop: PropTypes
-  // }
-
-  constructor() {
-    super();
-    console.log('yo');
+  static getDerivedStateFromProps(props) {
+    const buttonsBgColor = new Array(3).fill('#FFF');
+    buttonsBgColor[props.difficulty] = `${primaryColor}`;
+    return ({ buttonsBgColor });
   }
-
 
   render() {
     const { onClickSettings, onClickDifficulty } = this.props;
+    const { buttonsBgColor } = this.state;
     return (
       <Dialog>
         <DialogTitle>Snake Game</DialogTitle>
@@ -84,20 +80,25 @@ export default class Menu extends Component {
           <SettingTitle> Difficulty</SettingTitle>
           <ButtonRow>
             <RaisedButton
+              id="0"
               label="Easy"
               style={styles.buttons}
-              onClick={onClickDifficulty('easy')}
+              backgroundColor={buttonsBgColor[0]}
+              onClick={onClickDifficulty(0)}
             />
             <RaisedButton
+              id="1"
               label="Medium"
+              backgroundColor={buttonsBgColor[1]}
               style={styles.buttons}
-              backgroundColor={primaryColor}
-              onClick={onClickDifficulty('medium')}
+              onClick={onClickDifficulty(1)}
             />
             <RaisedButton
+              id="2"
               label="Hell"
+              backgroundColor={buttonsBgColor[2]}
               style={styles.buttons}
-              onClick={onClickDifficulty('hell')}
+              onClick={onClickDifficulty(2)}
             />
           </ButtonRow>
         </SettingRow>

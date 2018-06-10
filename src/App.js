@@ -26,12 +26,13 @@ const App = () => (
     <Fragment>
       <Game>
         {({
-          score, highScore, handlePauseGame, handleClickRetry, handleClickDifficulty, handleClickSettings, isMenuOpened, isGameOver, isGamePaused, ...canvasProps
+          score, highScore, difficulty, handlePauseGame, handleClickRetry, handleClickDifficulty, handleClickSettings, isMenuOpened, isGameOver, isGamePaused, ...canvasProps
           }) => (
             <Fragment>
               <Header
                 score={score}
                 highScore={highScore}
+                difficulty={difficulty}
                 isMenuOpened={isMenuOpened}
                 isGamePaused={isGamePaused}
                 onClickPlay={handlePauseGame}
