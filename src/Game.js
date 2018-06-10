@@ -60,8 +60,12 @@ export default class Game extends Component {
     this.setState({isGameOver: false}, this.generateNewGame);
   }
 
-  handleClickPlay = () => {
-    this.pauseGame();
+  handlePauseGame = () => {
+    if (this.state.isGamePaused) {
+      this.startGame();
+    } else {
+      this.pauseGame();
+    }
   }
 
   handleClickDifficulty = value => () => {
@@ -168,7 +172,7 @@ export default class Game extends Component {
     let interval = this.state.interval;
     clearInterval(interval); 
     interval = null;
-    this.setState({interval, isGamePaused: true});
+    this.setState(() => ({interval, isGamePaused: true}));
   }
 
   generateNewWalls = () => {
@@ -220,19 +224,13 @@ export default class Game extends Component {
   }
 
   move = (event) => {
-    let { snake, isGamePaused } = this.state;
+    let { snake } = this.state;
     switch(event.keyCode || event.which) {
       case ARROW_DOWN:  snake.moveDown(); break;
       case ARROW_UP:    snake.moveUp(); break;
       case ARROW_LEFT:  snake.moveLeft(); break;
       case ARROW_RIGHT: snake.moveRight(); break;
-      case PAUSE:       
-        if (isGamePaused) {
-          this.startGame();
-        } else {
-          this.pauseGame();
-        }
-        break;  
+      case PAUSE:       this.handlePauseGame(); break;  
       default: break;
     }
     this.setState(() => ({ snake }));
@@ -263,7 +261,7 @@ export default class Game extends Component {
       isMenuOpened,
       isGameOver,
       isGamePaused,
-      handleClickPlay: this.handleClickPlay,
+      handlePauseGame: this.handlePauseGame,
       handleClickRetry: this.handleClickRetry,
       handleClickDifficulty: this.handleClickDifficulty,
       handleClickSettings: this.handleClickSettings,

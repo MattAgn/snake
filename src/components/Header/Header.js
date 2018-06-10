@@ -45,6 +45,10 @@ const styles = {
   },
 };
 
+function preventFocus(e) {
+  e.preventDefault();
+}
+
 const Header = ({
   score, highScore, isMenuOpened, isGamePaused, onClickPlay, onClickSettings, ...settingsProps
 }) => (
@@ -57,6 +61,7 @@ const Header = ({
         style={styles.button}
         iconStyle={styles.icon}
         onClick={onClickPlay}
+        onMouseDown={preventFocus}
       >
         { isGamePaused ?
           <PlayArrowIcon color={lightGrey} />

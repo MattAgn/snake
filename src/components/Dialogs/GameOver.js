@@ -36,6 +36,7 @@ const styles = {
     borderRadius: 5,
     borderStyle: 'solid',
     borderWidth: 3,
+    borderColor: `${primaryColor}`,
   },
   icon: {
     height: 100,
@@ -55,18 +56,18 @@ const GameOver = ({
     </ScoresRow>
     <ButtonContainer>
       <IconButton
-        style={{ ...styles.button, borderColor: `${primaryColor}` }}
+        style={{ ...styles.button, backgroundColor: `${primaryColor}` }}
         iconStyle={styles.icon}
         onClick={onClickRetry}
       >
-        <RetryIcon color={primaryColor} />
+        <RetryIcon color="#FFF" />
       </IconButton>
       <IconButton
-        style={{ ...styles.button, borderColor: `${grey}` }}
+        style={{ ...styles.button }}
         iconStyle={styles.icon}
         onClick={onClickSettings}
       >
-        <SettingsIcon color={grey} />
+        <SettingsIcon color={primaryColor} />
       </IconButton>
     </ButtonContainer>
   </Dialog>
