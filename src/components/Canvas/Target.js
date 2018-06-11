@@ -1,8 +1,9 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { Circle } from 'react-konva';
+import TargetElement from '../../gameElements/Target';
 
-const Target = target => (
+const Target = ({ target }) => (
   <Circle
     x={target.x}
     y={target.y}
@@ -13,6 +14,6 @@ const Target = target => (
 
 export default Target;
 
-// Target.propTypes = {
-
-// };
+Target.propTypes = {
+  target: PropTypes.instanceOf(TargetElement).isRequired,
+};

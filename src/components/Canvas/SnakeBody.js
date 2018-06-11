@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
 import { Rect } from 'react-konva';
+import { primaryColor } from '../../utilities/styling';
 
 class SnakeBody extends Component {
   componentDidUpdate(prevProps) {
@@ -21,7 +22,7 @@ class SnakeBody extends Component {
             y={bodyPart.y}
             height={snake.squareSize}
             width={snake.squareSize}
-            fill="#8BC34A"
+            fill={primaryColor}
           />
         ))}
       </React.Fragment>

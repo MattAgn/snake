@@ -5,7 +5,7 @@ import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import RetryIcon from 'material-ui/svg-icons/av/replay';
 // import PropTypes from 'prop-types';
 import { Dialog, DialogTitle } from './Dialog';
-import { primaryColor, grey, elevation } from '../../utilities/styling';
+import { primaryColor } from '../../utilities/styling';
 
 
 const ScoresRow = styled.div`

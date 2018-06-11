@@ -1,7 +1,10 @@
-class GameElement {
-  constructor({ squareSize }) {
+export default class GameElement {
+  constructor({squareSize}) {
     this.squareSize = squareSize;
   }
+
+  static get NB_ROWS() {return 16}
+  static get NB_COLUMNS() {return 32}
 
   generateAvailableCoordinates = unavailableSquares => {
     let coordinates = {
@@ -17,11 +20,8 @@ class GameElement {
   }
 
   getRandomXPosition = x => 
-    Math.floor(Math.random() * this.nbColumns) * this.squareSize;
+    Math.floor(Math.random() * GameElement.NB_COLUMNS) * this.squareSize;
 
   getRandomYPosition = y => 
-    Math.floor(Math.random() * this.nbRows) * this.squareSize;
+    Math.floor(Math.random() * GameElement.NB_ROWS) * this.squareSize;
 }
-
-GameElement.nbRows = 32;
-GameElement.nbColumns = 16;

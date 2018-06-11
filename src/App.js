@@ -17,7 +17,6 @@ const muiTheme = getMuiTheme({
 const Controls = styled.h3`
   font-weight: 400;
   color: white;  
-  /* margin: 2%; */
   text-align: center;
 `;
 
@@ -26,28 +25,31 @@ const App = () => (
     <Fragment>
       <Game>
         {({
-          score, highScore, difficulty, handlePauseGame, handleClickRetry, handleClickDifficulty, handleClickSettings, isMenuOpened, isGameOver, isGamePaused, ...canvasProps
+          scores,
+          gameElements,
+          settings,
+          handleClickRetry,
+          handleClickSettings,
+          isGameOver,
+          ...headerProps
           }) => (
             <Fragment>
               <Header
-                score={score}
-                highScore={highScore}
-                difficulty={difficulty}
-                isMenuOpened={isMenuOpened}
-                isGamePaused={isGamePaused}
-                onClickPlay={handlePauseGame}
-                onClickDifficulty={handleClickDifficulty}
+                {...headerProps}
+                {...scores}
+                settings={settings}
                 onClickSettings={handleClickSettings}
               />
-              <Canvas {...canvasProps} />
+
+              {gameElements && <Canvas {...gameElements} />}
+
               <Controls>
                 Use the arrow keys to move, and press the space bar to pause the game
               </Controls>
 
               { isGameOver &&
                 <GameOver
-                  score={score}
-                  highScore={highScore}
+                  {...scores}
                   onClickSettings={handleClickSettings}
                   onClickRetry={handleClickRetry}
                 />

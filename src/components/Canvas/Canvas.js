@@ -7,31 +7,33 @@ import Target from './Target';
 import Walls from './Walls';
 
 import GameElement from '../../gameElements/GameElement';
-import Snake from '../../gameElements/SnakeBrain';
+import SnakeElement from '../../gameElements/SnakeBrain';
+import WallsElement from '../../gameElements/Walls';
+import TargetElement from '../../gameElements/Target';
 
 
-const canvasHeight = GameElement.nbRows * GameElement.squareSize;
-const canvasWidth = GameElement.nbColumns * GameElement.squareSize;
+const Canvas = ({ snake, walls, target }) => {
+  let canvasHeight;
+  let canvasWidth;
+  if (snake) {
+    canvasHeight = GameElement.NB_ROWS * snake.squareSize;
+    canvasWidth = GameElement.NB_COLUMNS * snake.squareSize;
+  }
+  return (
+    <Stage width={canvasWidth} height={canvasHeight}>
+      <Layer>
+        <Target target={target} />
+        <SnakeBody snake={snake} />
+        <Walls walls={walls} />
+      </Layer>
+    </Stage>
+  );
+};
 
-const Canvas = ({
-  target, snake, walls,
-}) => (
-  <Stage width={canvasWidth} height={canvasHeight}>
-    <Layer>
-      <Target {...target} />
-      {snake && <SnakeBody snake={snake} />}
-      {walls && <Walls walls={walls} />}
-    </Layer>
-  </Stage>
-);
-
-// TODO: change object
 Canvas.propTypes = {
-  canvasHeight: PropTypes.number.isRequired,
-  canvasWidth: PropTypes.number.isRequired,
-  snake: PropTypes.instanceOf(Snake).isRequired,
-  walls: PropTypes.object.isRequired,
-  target: PropTypes.object.isRequired,
+  snake: PropTypes.instanceOf(SnakeElement).isRequired,
+  walls: PropTypes.instanceOf(WallsElement).isRequired,
+  target: PropTypes.instanceOf(TargetElement).isRequired,
 };
 
 export default Canvas;

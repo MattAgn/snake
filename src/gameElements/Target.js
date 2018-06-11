@@ -1,6 +1,6 @@
-import GameClass from './GameClass';
+import GameElement from './GameElement';
 
-class Target extends GameClass {
+class Target extends GameElement {
   constructor({ squareSize, walls, snake }) {
     super({ squareSize });
     const unavailableSquares = walls.coordinatesList.concat(snake.body);

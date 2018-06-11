@@ -14,7 +14,7 @@ class Walls extends Component {
     const { walls } = this.props;
     return (
       <React.Fragment>
-        {walls.map(wall => (
+        {walls.coordinatesList.map(wall => (
           <Rect
             key={wall.id}
             x={wall.x}

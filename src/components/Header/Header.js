@@ -7,7 +7,8 @@ import PlayArrowIcon from 'material-ui/svg-icons/av/play-arrow';
 import PauseIcon from 'material-ui/svg-icons/av/pause';
 
 import { lightGrey, absolute } from '../../utilities/styling';
-import Menu from '../Dialogs/Menu';
+import Menu from '../Dialogs/Menu/Menu';
+
 
 const Row = styled.div`
   display: flex;
@@ -49,29 +50,57 @@ function preventFocus(e) {
   e.preventDefault();
 }
 
+function getMode(settings) {
+  if (settings.mode === 'classic') {
+    if (settings.difficulty === 0) {
+      return '( Easy )';
+    } else if (settings.difficulty === 1) {
+      return '( Medium )';
+    } else if (settings.difficulty === 2) {
+      return '( Hell )';
+    }
+  } else if (settings.mode === 'levels') {
+    return `( Level ${settings.difficulty} )`;
+  }
+  return '';
+}
+
 const Header = ({
-  score, highScore, isMenuOpened, isGamePaused, onClickPlay, onClickSettings, ...settingsProps
+  score,
+  highScore,
+  isMenuOpened,
+  isGamePaused,
+  handleClickPlay,
+  onClickSettings,
+  settings,
+  ...menuProps
 }) => (
   <Row>
-    <Information>Score : {score}</Information>
-    <Information>High Score : {highScore}</Information>
+    <Information>Score: {score}</Information>
+    <Information>High Score: {highScore}   {getMode(settings)}</Information>
     <ButtonsContainer>
 
       <IconButton
         style={styles.button}
         iconStyle={styles.icon}
-        onClick={onClickPlay}
+        onClick={handleClickPlay}
         onMouseDown={preventFocus}
       >
         { isGamePaused ?
           <PlayArrowIcon color={lightGrey} />
-          : <PauseIcon color={lightGrey} />}
+        : <PauseIcon color={lightGrey} />}
       </IconButton>
       <IconButton style={styles.button} iconStyle={styles.icon} onClick={onClickSettings} >
         <SettingsIcon color={lightGrey} />
       </IconButton>
     </ButtonsContainer>
-    { isMenuOpened && <Menu {...settingsProps} onClickSettings={onClickSettings} />}
+
+    { isMenuOpened &&
+      <Menu
+        {...menuProps}
+        settings={settings}
+        onClickSettings={onClickSettings}
+      />}
   </Row>
 );
 

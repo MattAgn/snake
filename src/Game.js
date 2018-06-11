@@ -1,8 +1,7 @@
 import { Component } from 'react';
-import { HardwareKeyboardArrowUp } from 'material-ui';
 import Snake from './gameElements/SnakeBrain';
-import Walls from './gameElements/Target';
-import Target from './gameElements/Walls';
+import Target from './gameElements/Target';
+import Walls from './gameElements/Walls';
 
 
 // Constants
@@ -17,8 +16,19 @@ export default class Game extends Component {
 
   constructor() {
     super();
-    const savedHighScore = localStorage.getItem('highScore');
-    let highScore = savedHighScore ? savedHighScore : 0;
+    const savedHighScores = localStorage.getItem('highScores');
+    const defaultHighScores = {
+      1: {
+        classic: { 0: 0, 1: 0, 2: 0 },
+        levels: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 }
+      },
+      2: {
+        classic: { 0: 0, 1: 0, 2: 0 },
+        levels: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 }
+      },  
+    }
+    //TODO: check highScore structure
+    let highScores = savedHighScores ? JSON.parse(savedHighScores) : defaultHighScores;
     const squareSize = Math.round(Math.sqrt(
       Math.pow(window.innerHeight, 2) + 
       Math.pow(window.innerWidth, 2)) / 50);
@@ -28,8 +38,8 @@ export default class Game extends Component {
         mode: 'classic',
         difficulty: 1,
       },
-      squareSize: squareSize,
-      highScore: highScore,
+      squareSize,
+      highScores,
       interval: null,
       isGamePaused: true,
       isMenuOpened: true,
@@ -79,9 +89,16 @@ export default class Game extends Component {
   }
 
   handleClickDifficulty = value => () => {
-    const { settings, score } = this.state;
+    const { settings } = this.state;
     settings.difficulty = value;
     this.setState({settings}, this.init);
+  }
+
+  //TODO: to factorise with above ?
+  handleClickMode = value => () => {
+    const {settings} = this.state;
+    settings.mode = value;
+    this.setState({settings}, this.init)
   }
 
 
@@ -89,20 +106,20 @@ export default class Game extends Component {
     const newSquareSize = Math.round(Math.sqrt(
       Math.pow(window.innerHeight, 2) + 
       Math.pow(window.innerWidth, 2)) / 50);
-    const { snake, target, walls } = this.state;
+    const { snake, target, walls } = this.state.gameElements;
     walls.updatePosition(newSquareSize);
     target.updatePosition(newSquareSize);
     snake.updatePosition(newSquareSize);
-    this.setState({ walls, snake, target });
+    this.setState({gameElements: { walls, snake, target }});
   }
 
 
   init = () => {
     const { squareSize, settings } = this.state;
     const walls = new Walls({squareSize, settings});
-    const snake = new Snake({squareSize});
+    const snake = new Snake({squareSize, walls});
     const target = new Target({squareSize, walls, snake});
-    this.setState({objects: { walls, snake, target }}); 
+    this.setState({gameElements: { walls, snake, target }}); 
   }
 
   startGame = () => {
@@ -115,23 +132,32 @@ export default class Game extends Component {
     this.startGame();
   }
   
+  getCurrentHighScore = () => {
+    const { nbPlayers, mode, difficulty } = this.state.settings;
+    return (this.state.highScores[nbPlayers][mode][difficulty]);
+  }
+
+  setNewHighScores = (newHighScore) => {
+    const { highScores } = this.state;
+    const  { nbPlayers, mode, difficulty } = this.state.settings;
+    highScores[nbPlayers][mode][difficulty] = newHighScore;
+    return highScores;
+  }
 
   runGame = () => {
-    const { snake, target, walls } = this.state.objects;
-    const { highScore, squareSize } = this.state;
-    const { hasReachedTarget, hasLost } = snake.run(target, walls);
+    const { snake, target, walls } = this.state.gameElements;
+    let { highScores, squareSize } = this.state;
+    const { hasReachedTarget, hasLost } = snake.run(target);
     let newTarget, newHighScore;
     if (hasReachedTarget) { 
       newTarget = new Target({ squareSize, snake, walls });
-      if (snake.body.length > highScore) {
+      if (snake.body.length > this.getCurrentHighScore()) {
         newHighScore = snake.body.length - 1;
-        localStorage.setItem('highScore', newHighScore);
-      } else {
-        newHighScore = highScore;
+        highScores = this.setNewHighScores(newHighScore);
+        localStorage.setItem('highScores', JSON.stringify(highScores));
       } 
     } else {
       newTarget = target;
-      newHighScore = highScore;
     }
     if (hasLost) {
       this.pauseGame();
@@ -139,7 +165,7 @@ export default class Game extends Component {
       this.setState(() => ({isGameOver: true}));  
     }
     else {
-      this.setState(() => ({snake, target: newTarget, highScore: newHighScore}));
+      this.setState(() => ({gameElements: {walls, snake, target: newTarget}, highScores}));
     }
   }
 
@@ -151,7 +177,7 @@ export default class Game extends Component {
   }
 
   move = (event) => {
-    let { snake } = this.state;
+    let { snake } = this.state.gameElements;
     switch(event.keyCode || event.which) {
       case ARROW_DOWN:  snake.moveDown(); break;
       case ARROW_UP:    snake.moveUp(); break;
@@ -167,23 +193,18 @@ export default class Game extends Component {
     const { children } = this.props;
     const {
       settings, 
-      target, 
-      snake, 
-      walls, 
-      highScore, 
+      gameElements, 
       isMenuOpened, 
       isGameOver,
       isGamePaused, 
     } = this.state;
-    const score = snake ? snake.body.length - 1 : 0;
+    const highScore = this.getCurrentHighScore();
+    const score = gameElements ? gameElements.snake.body.length - 1 : 0;
+    const scores = {highScore, score};
     return children({
       settings,
-      target,
-      snake,
-      walls,
-      highScore,
-      score,
-      difficulty,
+      gameElements,
+      scores,
       isMenuOpened,
       isGameOver,
       isGamePaused,
@@ -191,6 +212,7 @@ export default class Game extends Component {
       handleClickRetry: this.handleRetry,
       handleClickDifficulty: this.handleClickDifficulty,
       handleClickSettings: this.handleClickSettings,
+      handleClickMode: this.handleClickMode,
     });
   }
 }
