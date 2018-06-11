@@ -19,8 +19,8 @@ class Walls extends Component {
             key={wall.id}
             x={wall.x}
             y={wall.y}
-            height={wall.squareSize}
-            width={wall.squareSize}
+            height={walls.squareSize}
+            width={walls.squareSize}
             fill="black"
           />
         ))

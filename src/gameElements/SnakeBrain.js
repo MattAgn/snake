@@ -1,11 +1,12 @@
-class SnakeBrain {
-  constructor(x, y, squareSize, boardHeight, boardWidth) {
-    this.squareSize = squareSize;
-    this.body = [{x: x , y: y, id: 0}];
+class SnakeBrain extends GameElement{
+  constructor({squareSize, walls}) {
+    super({squareSize});
+    const coordinates = this.generateAvailableCoordinates(walls.coordinatesList);
+    this.body = [{...coordinates, id: 0}];
     this.dx = 0;
     this.dy = 0; 
-    this.boardHeight = boardHeight;
-    this.boardWidth = boardWidth;
+    this.boardHeight = this.nbRows * squareSize;
+    this.boardWidth = this.nbColumns * squareSize;
     this.moves = [];
     this.lastMove = {x:0, y:0}; 
   }
@@ -37,17 +38,16 @@ class SnakeBrain {
     } 
   }
 
-  updatePositionOnResize = (prevElementSize, newElementSize, boardHeight, boardWidth) => {
-    this.squareSize = newElementSize;
-    this.boardHeight = boardHeight;
-    this.boardWidth = boardWidth;
-    this.dx = this.lastMove.x * newElementSize;
-    this.dy = this.lastMove.y * newElementSize;
+  updatePosition = (newSquareSize) => {
+    const prevSquareSize = this.squareSize;
+    this.dx = this.lastMove.x * newSquareSize;
+    this.dy = this.lastMove.y * newSquareSize;
     this.body = this.body.map(bodyPart => ({
-      x: bodyPart.x / prevElementSize * newElementSize,
-      y: bodyPart.y / prevElementSize * newElementSize,
+      x: bodyPart.x / prevSquareSize * newSquareSize,
+      y: bodyPart.y / prevSquareSize * newSquareSize,
       id: bodyPart.id,
-    }))
+    }));
+    this.squareSize = newSquareSize;
   }
 
   handleBorderCase = () => {

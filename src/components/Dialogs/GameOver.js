@@ -5,7 +5,7 @@ import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import RetryIcon from 'material-ui/svg-icons/av/replay';
 // import PropTypes from 'prop-types';
 import { Dialog, DialogTitle } from './Dialog';
-import { primaryColor, grey } from '../../utilities/styling';
+import { primaryColor, grey, elevation } from '../../utilities/styling';
 
 
 const ScoresRow = styled.div`
@@ -56,7 +56,11 @@ const GameOver = ({
     </ScoresRow>
     <ButtonContainer>
       <IconButton
-        style={{ ...styles.button, backgroundColor: `${primaryColor}` }}
+        style={{
+          ...styles.button,
+          backgroundColor: `${primaryColor}`,
+          boxShadow: '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)',
+        }}
         iconStyle={styles.icon}
         onClick={onClickRetry}
       >

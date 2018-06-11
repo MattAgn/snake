@@ -2,9 +2,11 @@ import React from 'react';
 // import PropTypes from 'prop-types';
 import { Circle } from 'react-konva';
 
-const Target = props => (
+const Target = target => (
   <Circle
-    {...props}
+    x={target.x}
+    y={target.y}
+    radius={target.squareSize / 2}
     fill="red"
   />
 );

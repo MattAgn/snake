@@ -1,34 +1,36 @@
 import { Component } from 'react';
-import Snake from './SnakeBrain';
+import { HardwareKeyboardArrowUp } from 'material-ui';
+import Snake from './gameElements/SnakeBrain';
+import Walls from './gameElements/Target';
+import Target from './gameElements/Walls';
 
-// Constants{ snake ? 
+
+// Constants
 const PAUSE = 32;
 const ARROW_UP = 38;
 const ARROW_LEFT = 37;
 const ARROW_RIGHT = 39;
 const ARROW_DOWN = 40;
+//TODO: possibility to press space bar when menu opened to delete
 
 export default class Game extends Component {
 
   constructor() {
     super();
-    this.nbColumns = 34;
-    this.nbRows = 16;
-    this.wallsDifficulty = [0, 7, 15];
-    //TODO: highscore per difficulty
-    const savedHighScore = parseInt(localStorage.getItem('highScore'), 10);
+    const savedHighScore = localStorage.getItem('highScore');
     let highScore = savedHighScore ? savedHighScore : 0;
-    const elementSize = Math.round(Math.sqrt(
+    const squareSize = Math.round(Math.sqrt(
       Math.pow(window.innerHeight, 2) + 
       Math.pow(window.innerWidth, 2)) / 50);
     this.state = {
-      canvasHeight: elementSize * this.nbRows,
-      canvasWidth: elementSize * this.nbColumns,
-      elementSize: elementSize,
+      settings: {
+        nbPlayers: 1,
+        mode: 'classic',
+        difficulty: 1,
+      },
+      squareSize: squareSize,
       highScore: highScore,
       interval: null,
-      difficulty: 1,
-      nbWalls: this.wallsDifficulty[1],
       isGamePaused: true,
       isMenuOpened: true,
       isGameOver: false,
@@ -57,8 +59,15 @@ export default class Game extends Component {
     }
   }
 
-  handleClickRetry = () => {
+  handleRetry = () => {
+    document.removeEventListener('keypress', this.onKeyPressRetry)
     this.setState({isGameOver: false}, this.generateNewGame);
+  }
+
+  onKeyPressRetry = (e) => {
+    if (e.keyCode || e.which) {
+      this.handleRetry();
+    }
   }
 
   handlePauseGame = () => {
@@ -70,68 +79,30 @@ export default class Game extends Component {
   }
 
   handleClickDifficulty = value => () => {
-    this.setState({
-      difficulty: value, 
-      nbWalls: this.wallsDifficulty[value]
-    }, this.init);
+    const { settings, score } = this.state;
+    settings.difficulty = value;
+    this.setState({settings}, this.init);
   }
 
 
-  //TODO: to rectify
-  getRandomXPosition = x => 
-    Math.floor(Math.random() * this.nbColumns) * this.state.elementSize;
-  getRandomYPosition = y => 
-    Math.floor(Math.random() * this.nbRows) * this.state.elementSize;
-
-
   updateSizeCanvas = () => {
-    this.setState(prevState => {
-      const newElementSize = Math.round(Math.sqrt(
-        Math.pow(window.innerHeight, 2) + 
-        Math.pow(window.innerWidth, 2)) / 50);
-      const { snake, target, walls } = prevState;
-      let resizedTarget, resizedWalls;
-      if (target) {
-        resizedTarget = {
-          radius: newElementSize / 2,
-          x: target.x / prevState.elementSize * newElementSize,
-          y: target.y / prevState.elementSize * newElementSize,
-        }
-      }
-      if (walls) {
-        resizedWalls = walls.map(wall => ({
-          id: wall.id,
-          x: wall.x / prevState.elementSize * newElementSize,
-          y: wall.y / prevState.elementSize * newElementSize,
-          squareSize: newElementSize,
-        }))
-      }
-      if (snake) {
-        snake.updatePositionOnResize(
-          prevState.elementSize, 
-          newElementSize,
-          newElementSize * this.nbRows,
-          newElementSize * this.nbColumns);
-      }
-      return(
-        {
-          canvasHeight: newElementSize * this.nbRows,
-          canvasWidth: newElementSize * this.nbColumns,
-          elementSize : newElementSize,
-          target: resizedTarget,
-          walls: resizedWalls,
-          snake,
-        }
-      )
-    })
+    const newSquareSize = Math.round(Math.sqrt(
+      Math.pow(window.innerHeight, 2) + 
+      Math.pow(window.innerWidth, 2)) / 50);
+    const { snake, target, walls } = this.state;
+    walls.updatePosition(newSquareSize);
+    target.updatePosition(newSquareSize);
+    snake.updatePosition(newSquareSize);
+    this.setState({ walls, snake, target });
   }
 
 
   init = () => {
-    const walls = this.generateNewWalls();
-    const snake = this.generateNewSnake(walls);
-    const target = this.generateNewTarget(walls);
-    this.setState({ walls, snake, target }); 
+    const { squareSize, settings } = this.state;
+    const walls = new Walls({squareSize, settings});
+    const snake = new Snake({squareSize});
+    const target = new Target({squareSize, walls, snake});
+    this.setState({objects: { walls, snake, target }}); 
   }
 
   startGame = () => {
@@ -146,11 +117,12 @@ export default class Game extends Component {
   
 
   runGame = () => {
-    const { snake, target, walls, highScore } = this.state;
+    const { snake, target, walls } = this.state.objects;
+    const { highScore, squareSize } = this.state;
     const { hasReachedTarget, hasLost } = snake.run(target, walls);
     let newTarget, newHighScore;
     if (hasReachedTarget) { 
-      newTarget = this.generateNewTarget(this.state.walls);
+      newTarget = new Target({ squareSize, snake, walls });
       if (snake.body.length > highScore) {
         newHighScore = snake.body.length - 1;
         localStorage.setItem('highScore', newHighScore);
@@ -163,6 +135,7 @@ export default class Game extends Component {
     }
     if (hasLost) {
       this.pauseGame();
+      document.addEventListener('keypress', this.onKeyPressRetry)
       this.setState(() => ({isGameOver: true}));  
     }
     else {
@@ -175,54 +148,6 @@ export default class Game extends Component {
     clearInterval(interval); 
     interval = null;
     this.setState(() => ({interval, isGamePaused: true}));
-  }
-
-  generateNewWalls = () => {
-    const walls = [];
-    for (let i = 0; i < this.state.nbWalls; i++) {
-      const wall = {
-        x: this.getRandomXPosition(),
-        y: this.getRandomYPosition(),
-        squareSize: this.state.elementSize,
-        id: i,
-      }
-      walls.push(wall)
-    }
-    return walls
-  }
-
-  generateAvailableCoordinates = walls => {
-    let coordinates = {
-      y: this.getRandomYPosition(), 
-      x: this.getRandomXPosition(),
-    };
-    walls.forEach(wall => {
-      if (wall.x === coordinates.x && wall.y === coordinates.y) {
-        coordinates = this.generateAvailableCoordinates(walls);
-      } 
-    })
-    return coordinates;  
-  }
-
-  generateNewTarget = walls => {
-    const coordinates = this.generateAvailableCoordinates(walls);
-    return ({
-      y: coordinates.y + this.state.elementSize / 2, 
-      x: coordinates.x + this.state.elementSize / 2, 
-      radius: this.state.elementSize / 2,
-    })
-  }
-
-  generateNewSnake = walls => {
-    const coordinates = this.generateAvailableCoordinates(walls);
-    const snake = new Snake(
-      coordinates.x,
-      coordinates.y, 
-      this.state.elementSize,
-      this.state.canvasHeight,
-      this.state.canvasWidth,
-    );
-    return snake;
   }
 
   move = (event) => {
@@ -240,33 +165,30 @@ export default class Game extends Component {
 
   render() {
     const { children } = this.props;
-    const { 
+    const {
+      settings, 
       target, 
       snake, 
       walls, 
       highScore, 
-      canvasHeight, 
-      canvasWidth,
-      difficulty, 
       isMenuOpened, 
       isGameOver,
       isGamePaused, 
     } = this.state;
     const score = snake ? snake.body.length - 1 : 0;
     return children({
+      settings,
       target,
       snake,
       walls,
       highScore,
-      canvasHeight,
-      canvasWidth,
       score,
       difficulty,
       isMenuOpened,
       isGameOver,
       isGamePaused,
       handlePauseGame: this.handlePauseGame,
-      handleClickRetry: this.handleClickRetry,
+      handleClickRetry: this.handleRetry,
       handleClickDifficulty: this.handleClickDifficulty,
       handleClickSettings: this.handleClickSettings,
     });
