@@ -16,7 +16,6 @@ const ButtonRow = styled.div`
 
 const LevelSettingRow = styled(SettingRow)`
   flex-direction: column;
-  margin-bottom: 0;
 `;
 
 const styles = {
@@ -26,7 +25,10 @@ const styles = {
 };
 
 const LevelsSetting = ({ handleClickDifficulty, buttonsBgColor }) => (
-  <LevelSettingRow settingName="Levels">
+  <LevelSettingRow
+    settingName="Levels"
+    indication="Reach a score of 70 to unlock the next level"
+  >
     <ButtonRow>
       <RaisedButton
         label="1"

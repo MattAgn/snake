@@ -56,7 +56,13 @@ export default class Menu extends Component {
   }
 
   render() {
-    const { onClickSettings, handleClickDifficulty, handleClickMode, settings } = this.props;
+    const { 
+      onClickSettings, 
+      handleClickDifficulty, 
+      handleClickMode, 
+      settings, 
+      highScores 
+    } = this.props;
     const { 
       modeButtonsBgColor, 
       difficultyButtonsBgColor,
@@ -74,6 +80,7 @@ export default class Menu extends Component {
             handleClickDifficulty={handleClickDifficulty} 
             buttonsBgColor={difficultyButtonsBgColor}/>
         : <LevelsSetting
+            highScores={highScores}
             handleClickDifficulty={handleClickDifficulty} 
             buttonsBgColor={levelsButtonsBgColor}/>
         }
