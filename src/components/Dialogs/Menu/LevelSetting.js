@@ -44,7 +44,6 @@ const LevelsSetting = ({ handleClickDifficulty, buttonsBgColor }) => (
       />
       <RaisedButton
         label="3"
-        disabled
         backgroundColor={buttonsBgColor[3]}
         style={styles.buttons}
         onClick={handleClickDifficulty(3)}
@@ -53,7 +52,6 @@ const LevelsSetting = ({ handleClickDifficulty, buttonsBgColor }) => (
     <ButtonRow>
       <RaisedButton
         label="4"
-        disabled
         style={styles.buttons}
         backgroundColor={buttonsBgColor[4]}
         onClick={handleClickDifficulty(4)}

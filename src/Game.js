@@ -69,7 +69,7 @@ export default class Game extends Component {
   }
 
   handleRetry = () => {
-    document.removeEventListener('keypress', this.onKeyPressRetry)
+    window.removeEventListener('keypress', this.onKeyPressRetry)
     this.setState({isGameOver: false}, this.generateNewGame);
   }
 
@@ -184,7 +184,7 @@ export default class Game extends Component {
       case ARROW_UP:    snake.moveUp(); break;
       case ARROW_LEFT:  snake.moveLeft(); break;
       case ARROW_RIGHT: snake.moveRight(); break;
-      case PAUSE:       this.handlePauseGame(); console.log("yo");break;  
+      case PAUSE:       this.handlePauseGame(); break;  
       default: break;
     }
     this.setState(() => ({ snake }));
