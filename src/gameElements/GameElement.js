@@ -3,7 +3,7 @@ export default class GameElement {
     this.squareSize = squareSize;
   }
 
-  static get NB_ROWS() {return 16}
+  static get NB_ROWS() {return 15}
   static get NB_COLUMNS() {return 32}
 
   generateAvailableCoordinates = unavailableSquares => {

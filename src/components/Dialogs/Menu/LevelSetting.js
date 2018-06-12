@@ -38,7 +38,6 @@ const LevelsSetting = ({ handleClickDifficulty, buttonsBgColor }) => (
       />
       <RaisedButton
         label="2"
-        disabled
         backgroundColor={buttonsBgColor[2]}
         style={styles.buttons}
         onClick={handleClickDifficulty(2)}

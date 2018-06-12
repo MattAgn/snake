@@ -35,8 +35,8 @@ export default class Game extends Component {
     this.state = {
       settings: {
         nbPlayers: 1,
-        mode: 'classic',
-        difficulty: 1,
+        mode: 'levels',
+        difficulty: 2,
       },
       squareSize,
       highScores,
@@ -50,7 +50,6 @@ export default class Game extends Component {
   componentDidMount() {
     this.init();
     window.addEventListener('resize', this.updateSizeCanvas);
-    window.addEventListener('keydown', this.move);
   }
 
   handleClickSettings = () => {
@@ -125,6 +124,7 @@ export default class Game extends Component {
   startGame = () => {
     const interval = setInterval(this.runGame, 120);
     this.setState({interval, isGamePaused: false});
+    window.addEventListener('keydown', this.move);
   }
 
   generateNewGame = () => {
@@ -160,8 +160,9 @@ export default class Game extends Component {
       newTarget = target;
     }
     if (hasLost) {
+      window.removeEventListener('keydown', this.move);
+      window.addEventListener('keypress', this.onKeyPressRetry);
       this.pauseGame();
-      document.addEventListener('keypress', this.onKeyPressRetry)
       this.setState(() => ({isGameOver: true}));  
     }
     else {
@@ -183,7 +184,7 @@ export default class Game extends Component {
       case ARROW_UP:    snake.moveUp(); break;
       case ARROW_LEFT:  snake.moveLeft(); break;
       case ARROW_RIGHT: snake.moveRight(); break;
-      case PAUSE:       this.handlePauseGame(); break;  
+      case PAUSE:       this.handlePauseGame(); console.log("yo");break;  
       default: break;
     }
     this.setState(() => ({ snake }));
