@@ -9,18 +9,18 @@ const styles = {
   },
 };
 
-const ModeSetting = ({ onClickMode }) => (
+const ModeSetting = ({ onClickMode, buttonsBgColor }) => (
   <SettingRow settingName="Game Mode">
     <RaisedButton
       label="Classic"
       style={styles.buttons}
-      backgroundColor={primaryColor}
+      backgroundColor={buttonsBgColor.classic}
       onClick={onClickMode('classic')}
     />
     <RaisedButton
-      label="levels"
+      label="Levels"
       style={styles.buttons}
-      backgroundColor={primaryColor}
+      backgroundColor={buttonsBgColor.levels}
       onClick={onClickMode('levels')}
     />
   </SettingRow>

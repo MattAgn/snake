@@ -41,7 +41,7 @@ export default class SnakeBrain extends GameElement {
     } 
   }
 
-  updatePosition = (newSquareSize) => {
+  updatePosition = (newSquareSize, walls) => {
     const prevSquareSize = this.squareSize;
     this.dx = this.lastMove.x * newSquareSize;
     this.dy = this.lastMove.y * newSquareSize;
@@ -51,6 +51,9 @@ export default class SnakeBrain extends GameElement {
       id: bodyPart.id,
     }));
     this.squareSize = newSquareSize;
+    this.boardHeight = GameElement.NB_ROWS * newSquareSize;
+    this.boardWidth = GameElement.NB_COLUMNS * newSquareSize;
+    this.walls = walls;
   }
 
   handleBorderCase = () => {

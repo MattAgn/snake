@@ -109,8 +109,8 @@ export default class Game extends Component {
     const { snake, target, walls } = this.state.gameElements;
     walls.updatePosition(newSquareSize);
     target.updatePosition(newSquareSize);
-    snake.updatePosition(newSquareSize);
-    this.setState({gameElements: { walls, snake, target }});
+    snake.updatePosition(newSquareSize, walls);
+    this.setState({gameElements: { walls, snake, target }, squareSize: newSquareSize});
   }
 
 

@@ -20,14 +20,15 @@ class Walls extends GameElement {
   }
 
   updatePosition = newSquareSize => {
-    const coordinatesList = this.coordinatesList;
+    let coordinatesList = this.coordinatesList;
     const prevSquareSize = this.squareSize;
-    coordinatesList.map(wall => ({
+    coordinatesList = coordinatesList.map(wall => ({
       id: wall.id,
       x: wall.x / prevSquareSize * newSquareSize,
       y: wall.y / prevSquareSize * newSquareSize,
     }));
     this.squareSize = newSquareSize;
+    this.coordinatesList = coordinatesList;
   }
 }
 

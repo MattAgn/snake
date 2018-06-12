@@ -29,32 +29,53 @@ const styles = {
 
 export default class Menu extends Component {
   state = {
-    buttonsBgColor: [],
+    difficultyButtonsBgColor: [],
+    modeButtonsBgColor: {classic: '#FFF', levels: '#FFF'},
+    levelsButtonsBgColor: [],
+
   }
 
-  static getDerivedStateFromProps(props) {
-    const buttonsBgColor = new Array(3).fill('#FFF');
-    buttonsBgColor[props.settings.difficulty] = `${primaryColor}`;
-    return ({ buttonsBgColor });
+  static getDerivedStateFromProps(props, state) {
+    const { difficulty, mode } = props.settings;
+    let { modeButtonsBgColor } = state;
+    if (mode === 'classic') {
+      const difficultyButtonsBgColor = Menu.getBgColor(difficulty, 3);
+      modeButtonsBgColor = {classic: primaryColor, levels: '#FFF'};
+      return ({modeButtonsBgColor, difficultyButtonsBgColor});
+    } else if (mode === 'levels') {
+      const levelsButtonsBgColor = Menu.getBgColor(difficulty, 6);
+      modeButtonsBgColor = {classic: '#FFF', levels: primaryColor};
+      return ({levelsButtonsBgColor, modeButtonsBgColor})
+    }
+  }
+
+  static getBgColor = (setting, listSize) => {
+    const buttonsBgColor = new Array(listSize).fill('#FFF');
+    buttonsBgColor[setting] = `${primaryColor}`;
+    return (buttonsBgColor);
   }
 
   render() {
     const { onClickSettings, handleClickDifficulty, handleClickMode, settings } = this.props;
-    const { buttonsBgColor } = this.state;
+    const { 
+      modeButtonsBgColor, 
+      difficultyButtonsBgColor,
+      levelsButtonsBgColor, 
+    } = this.state;
     return (
       <Dialog>
         <DialogTitle>Snake Game</DialogTitle>
 
         <PlayerSetting/>
-        <ModeSetting onClickMode={handleClickMode}/>
+        <ModeSetting onClickMode={handleClickMode} buttonsBgColor={modeButtonsBgColor}/>
 
         { settings.mode === 'classic' ?
           <DifficultySetting 
             handleClickDifficulty={handleClickDifficulty} 
-            buttonsBgColor={buttonsBgColor}/>
+            buttonsBgColor={difficultyButtonsBgColor}/>
         : <LevelsSetting
             handleClickDifficulty={handleClickDifficulty} 
-            buttonsBgColor={buttonsBgColor}/>
+            buttonsBgColor={levelsButtonsBgColor}/>
         }
         
 
