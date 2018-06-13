@@ -1,8 +1,8 @@
 import GameElement from './GameElement';
 
 class Walls extends GameElement {
-  constructor({ squareSize, settings }) {
-    super({ squareSize });
+  constructor(squareSize, settings) {
+    super(squareSize);
     this.wallsPerDifficulty = [0, 7, 15];
     let coordinatesList = [];
     const { difficulty, mode } = settings;
@@ -64,7 +64,11 @@ const levelsCoordinatesList = {
       {y: 3, x: 10}, {y: 3, x: 11}, {y: 3, x: 12}, {y: 3, x: 13},
       {y: 3, x: 18}, {y: 3, x: 19}, {y: 3, x: 20}, {y: 3, x: 21}, 
       {y: 11, x: 10}, {y: 11, x: 11}, {y: 11, x: 12}, {y: 11, x: 13}, 
-      {y: 11, x: 21}, {y: 11, x: 20}, {y: 11, x: 19}, {y: 11, x: 18}]
+      {y: 11, x: 21}, {y: 11, x: 20}, {y: 11, x: 19}, {y: 11, x: 18}],
+  6: [{y: 8, x: 9}, {y: 9, x: 9}, {y: 10, x: 9}, {y: 11, x: 9}, 
+      {y: 3, x: 9}, {y: 5, x: 9}, {y: 6, x: 9}, {y: 7, x: 9}, {y: 4, x: 9},
+      {y: 8, x: 22}, {y: 9, x: 22}, {y: 10, x: 22}, {y: 11, x: 22},
+      {y: 3, x: 22}, {y: 5, x: 22}, {y: 6, x: 22}, {y: 7, x: 22}, {y: 4, x: 22}],
 }
 
 

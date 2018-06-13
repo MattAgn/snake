@@ -12,18 +12,24 @@ import WallsElement from '../../gameElements/Walls';
 import TargetElement from '../../gameElements/Target';
 
 
-const Canvas = ({ snake, walls, target }) => {
+const Canvas = ({
+  snakes, walls, targets,
+}) => {
   let canvasHeight;
   let canvasWidth;
-  if (snake) {
-    canvasHeight = GameElement.NB_ROWS * snake.squareSize;
-    canvasWidth = GameElement.NB_COLUMNS * snake.squareSize;
+  if (snakes) {
+    canvasHeight = GameElement.NB_ROWS * snakes[0].squareSize;
+    canvasWidth = GameElement.NB_COLUMNS * snakes[0].squareSize;
   }
   return (
     <Stage width={canvasWidth} height={canvasHeight}>
       <Layer>
-        <Target target={target} />
-        <SnakeBody snake={snake} />
+        {targets.map(target => (
+          <Target target={target} />
+        ))}
+        {snakes.map(snake => (
+          <SnakeBody snake={snake} />
+        ))}
         <Walls walls={walls} />
       </Layer>
     </Stage>
@@ -31,9 +37,9 @@ const Canvas = ({ snake, walls, target }) => {
 };
 
 Canvas.propTypes = {
-  snake: PropTypes.instanceOf(SnakeElement).isRequired,
+  snakes: PropTypes.arrayOf(PropTypes.instanceOf(SnakeElement).isRequired).isRequired,
   walls: PropTypes.instanceOf(WallsElement).isRequired,
-  target: PropTypes.instanceOf(TargetElement).isRequired,
+  targets: PropTypes.arrayOf(PropTypes.instanceOf(TargetElement).isRequired).isRequired,
 };
 
 export default Canvas;

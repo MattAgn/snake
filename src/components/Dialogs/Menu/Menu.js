@@ -32,20 +32,22 @@ export default class Menu extends Component {
     difficultyButtonsBgColor: [],
     modeButtonsBgColor: {classic: '#FFF', levels: '#FFF'},
     levelsButtonsBgColor: [],
-
+    playersButtonsBgColor: {1: '#FFF', 2: '#FFF'},
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { difficulty, mode } = props.settings;
+    const { difficulty, mode, nbPlayers } = props.settings;
     let { modeButtonsBgColor } = state;
+    let playersButtonsBgColor = {1: '#FFF', 2: '#FFF'};
+    playersButtonsBgColor[nbPlayers] = primaryColor;
     if (mode === 'classic') {
       const difficultyButtonsBgColor = Menu.getBgColor(difficulty, 3);
       modeButtonsBgColor = {classic: primaryColor, levels: '#FFF'};
-      return ({modeButtonsBgColor, difficultyButtonsBgColor});
+      return ({modeButtonsBgColor, difficultyButtonsBgColor, playersButtonsBgColor});
     } else if (mode === 'levels') {
       const levelsButtonsBgColor = Menu.getBgColor(difficulty, 6);
       modeButtonsBgColor = {classic: '#FFF', levels: primaryColor};
-      return ({levelsButtonsBgColor, modeButtonsBgColor})
+      return ({levelsButtonsBgColor, modeButtonsBgColor, playersButtonsBgColor})
     }
   }
 
@@ -60,6 +62,7 @@ export default class Menu extends Component {
       onClickSettings, 
       handleClickDifficulty, 
       handleClickMode, 
+      handleClickNbPlayers,
       settings, 
       highScores 
     } = this.props;
@@ -67,13 +70,21 @@ export default class Menu extends Component {
       modeButtonsBgColor, 
       difficultyButtonsBgColor,
       levelsButtonsBgColor, 
+      playersButtonsBgColor
     } = this.state;
     return (
       <Dialog>
         <DialogTitle>Snake Game</DialogTitle>
 
-        <PlayerSetting/>
-        <ModeSetting onClickMode={handleClickMode} buttonsBgColor={modeButtonsBgColor}/>
+        <PlayerSetting 
+          onClickNbPlayers={handleClickNbPlayers} 
+          buttonsBgColor={playersButtonsBgColor}
+        />
+
+        <ModeSetting 
+          onClickMode={handleClickMode} 
+          buttonsBgColor={modeButtonsBgColor}
+        />
 
         { settings.mode === 'classic' ?
           <DifficultySetting 

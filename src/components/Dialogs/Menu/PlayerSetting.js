@@ -9,10 +9,20 @@ const styles = {
   },
 };
 
-const PlayerSetting = () => (
-  <SettingRow settingName="Player Mode">
-    <RaisedButton style={styles.buttons} backgroundColor={primaryColor}>1 player</RaisedButton>
-    <RaisedButton style={styles.buttons} disabled>2 players</RaisedButton>
+const PlayerSetting = ({ onClickNbPlayers, buttonsBgColor }) => (
+  <SettingRow settingName="Number of players">
+    <RaisedButton
+      label="1"
+      style={styles.buttons}
+      backgroundColor={buttonsBgColor[1]}
+      onClick={onClickNbPlayers(1)}
+    />
+    <RaisedButton
+      label="2"
+      style={styles.buttons}
+      backgroundColor={buttonsBgColor[2]}
+      onClick={onClickNbPlayers(2)}
+    />
   </SettingRow>
 );
 

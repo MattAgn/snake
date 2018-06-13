@@ -18,7 +18,7 @@ body{
 
 #root > div:nth-child(2) {
   height: fit-content;
-  margin: 2% auto;
+  margin: 4% auto;
   background: #424242;
 }
 

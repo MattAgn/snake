@@ -6,10 +6,14 @@ import Walls from './gameElements/Walls';
 
 // Constants
 const PAUSE = 32;
-const ARROW_UP = 38;
-const ARROW_LEFT = 37;
-const ARROW_RIGHT = 39;
-const ARROW_DOWN = 40;
+const RIGHT_PLAYER_UP = 38;
+const RIGHT_PLAYER_LEFT = 37;
+const RIGHT_PLAYER_RIGHT = 39;
+const RIGHT_PLAYER_DOWN = 40;
+const LEFT_PLAYER_UP = 90;
+const LEFT_PLAYER_RIGHT = 68;
+const LEFT_PLAYER_DOWN = 83;
+const LEFT_PLAYER_LEFT = 81;
 //TODO: possibility to press space bar when menu opened to delete
 
 export default class Game extends Component {
@@ -35,9 +39,9 @@ export default class Game extends Component {
     this.state = {
       settings: {
         nbPlayers: 1,
-        mode: 'levels',
-        difficulty: 2,
-      },
+        mode: 'classic',
+        difficulty: 1,
+      }, //TODO: not very proper between levels and difficulty
       squareSize,
       highScores,
       interval: null,
@@ -97,7 +101,16 @@ export default class Game extends Component {
   handleClickMode = value => () => {
     const {settings} = this.state;
     settings.mode = value;
+    settings.difficulty = 1;
     this.setState({settings}, this.init)
+  }
+
+  handleClickNbPlayers = value => () => {
+    const { settings } = this.state;
+    settings.nbPlayers = value;
+    settings.mode = 'classic';
+    settings.difficulty = 1;
+    this.setState({settings}, this.init);
   }
 
 
@@ -105,20 +118,24 @@ export default class Game extends Component {
     const newSquareSize = Math.round(Math.sqrt(
       Math.pow(window.innerHeight, 2) + 
       Math.pow(window.innerWidth, 2)) / 50);
-    const { snake, target, walls } = this.state.gameElements;
+    const { snakes, targets, walls } = this.state.gameElements;
     walls.updatePosition(newSquareSize);
-    target.updatePosition(newSquareSize);
-    snake.updatePosition(newSquareSize, walls);
-    this.setState({gameElements: { walls, snake, target }, squareSize: newSquareSize});
+    for (let target of targets) {target.updatePosition(newSquareSize);}
+    for (let snake of snakes) {snake.updatePosition(newSquareSize, walls);}
+    this.setState({gameElements: { walls, snakes, targets }, squareSize: newSquareSize});
   }
 
 
   init = () => {
     const { squareSize, settings } = this.state;
-    const walls = new Walls({squareSize, settings});
-    const snake = new Snake({squareSize, walls});
-    const target = new Target({squareSize, walls, snake});
-    this.setState({gameElements: { walls, snake, target }}); 
+    const walls = new Walls(squareSize, settings);
+    const snakes = [];
+    const targets = [];
+    for (let i = 0; i < settings.nbPlayers; i++) {
+      snakes.push(new Snake(squareSize));
+      targets.push(new Target(squareSize));
+    }
+    this.setState({gameElements: {walls, snakes, targets}}); 
   }
 
   startGame = () => {
@@ -137,36 +154,65 @@ export default class Game extends Component {
     return (this.state.highScores[nbPlayers][mode][difficulty]);
   }
 
+  getCurrentScore = () => (
+    this.state.gameElements.snakes.reduce((score, snake) => (
+      score + snake.body.length), 0)
+  )
+
   setNewHighScores = (newHighScore) => {
     const { highScores } = this.state;
     const  { nbPlayers, mode, difficulty } = this.state.settings;
     highScores[nbPlayers][mode][difficulty] = newHighScore;
+    this.setState({highScores});
     return highScores;
   }
 
-  runGame = () => {
-    const { snake, target, walls } = this.state.gameElements;
-    let { highScores, squareSize } = this.state;
-    const { hasReachedTarget, hasLost } = snake.run(target);
-    let newTarget, newHighScore;
-    if (hasReachedTarget) { 
-      newTarget = new Target({ squareSize, snake, walls });
-      if (snake.body.length > this.getCurrentHighScore()) {
-        newHighScore = snake.body.length - 1;
-        highScores = this.setNewHighScores(newHighScore);
-        localStorage.setItem('highScores', JSON.stringify(highScores));
-      } 
-    } else {
-      newTarget = target;
+  checkNewHighScore = () => {
+    let { highScores, gameElements } = this.state;
+    const { snakes } = gameElements;
+    const currentScore = this.getCurrentScore();
+    if (currentScore > this.getCurrentHighScore()) {
+      highScores = this.setNewHighScores(currentScore);
+      localStorage.setItem('highScores', JSON.stringify(highScores));
     }
-    if (hasLost) {
+  } 
+
+  snakesNeedNewTargets = targetsEaten => {
+    let { squareSize, settings, gameElements } = this.state;
+    const { targets } = this.state.gameElements;
+    let currentTargets;
+    for (let targetEaten of targetsEaten) {
+      currentTargets = targets.filter(target => (
+        target.x !== targetEaten.x && target.y !== targetEaten.y
+      ))
+    }
+    while (currentTargets.length < settings.nbPlayers) {
+      currentTargets.push(new Target(squareSize));
+    }
+    return currentTargets;
+  }
+
+  runGame = () => {
+    let { snakes, targets, walls } = this.state.gameElements;
+    let havePlayersLost = false;
+    let targetsEaten = [];
+    for (let snake of snakes) {
+      const { targetEaten, hasLost } = snake.run(targets, walls)
+      havePlayersLost = havePlayersLost || hasLost;
+      if (targetEaten) {targetsEaten.push(targetEaten);}
+    }
+    if (targetsEaten.length > 0) {
+      this.checkNewHighScore();
+      targets = this.snakesNeedNewTargets(targetsEaten);
+    }
+    if (havePlayersLost) {
       window.removeEventListener('keydown', this.move);
       window.addEventListener('keypress', this.onKeyPressRetry);
       this.pauseGame();
       this.setState(() => ({isGameOver: true}));  
     }
     else {
-      this.setState(() => ({gameElements: {walls, snake, target: newTarget}, highScores}));
+      this.setState(() => ({ gameElements: {walls, snakes, targets}}));
     }
   }
 
@@ -178,16 +224,26 @@ export default class Game extends Component {
   }
 
   move = (event) => {
-    let { snake } = this.state.gameElements;
+    let { snakes } = this.state.gameElements;
+    console.log(event.keyCode);
     switch(event.keyCode || event.which) {
-      case ARROW_DOWN:  snake.moveDown(); break;
-      case ARROW_UP:    snake.moveUp(); break;
-      case ARROW_LEFT:  snake.moveLeft(); break;
-      case ARROW_RIGHT: snake.moveRight(); break;
+      case RIGHT_PLAYER_DOWN:  snakes[0].moveDown(); break;
+      case RIGHT_PLAYER_UP:    snakes[0].moveUp(); break;
+      case RIGHT_PLAYER_LEFT:  snakes[0].moveLeft(); break;
+      case RIGHT_PLAYER_RIGHT: snakes[0].moveRight(); break;
       case PAUSE:       this.handlePauseGame(); break;  
       default: break;
     }
-    this.setState(() => ({ snake }));
+    if (snakes.length > 1) {
+      switch(event.keyCode || event.which) {
+        case LEFT_PLAYER_DOWN:  snakes[1].moveDown(); break;
+        case LEFT_PLAYER_UP:    snakes[1].moveUp(); break;
+        case LEFT_PLAYER_LEFT:  snakes[1].moveLeft(); break;
+        case LEFT_PLAYER_RIGHT: snakes[1].moveRight(); break;
+        default: break;
+      }
+    }
+    this.setState(() => ({ snakes }));
   }
 
   render() {
@@ -200,7 +256,7 @@ export default class Game extends Component {
       isGamePaused, 
     } = this.state;
     const highScore = this.getCurrentHighScore();
-    const score = gameElements ? gameElements.snake.body.length - 1 : 0;
+    const score = gameElements ? this.getCurrentScore() - 1 : 0;
     const scores = {highScore, score};
     return children({
       settings,
@@ -214,6 +270,7 @@ export default class Game extends Component {
       handleClickDifficulty: this.handleClickDifficulty,
       handleClickSettings: this.handleClickSettings,
       handleClickMode: this.handleClickMode,
+      handleClickNbPlayers: this.handleClickNbPlayers,
     });
   }
 }

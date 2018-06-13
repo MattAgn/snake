@@ -1,10 +1,9 @@
 import GameElement from './GameElement';
 
 class Target extends GameElement {
-  constructor({ squareSize, walls, snake }) {
-    super({ squareSize });
-    const unavailableSquares = walls.coordinatesList.concat(snake.body);
-    const coordinates = this.generateAvailableCoordinates(unavailableSquares);
+  constructor(squareSize) {
+    super(squareSize);
+    const coordinates = this.generateAvailableCoordinates();
     this.x = coordinates.x + squareSize / 2;
     this.y = coordinates.y + squareSize / 2;
   }

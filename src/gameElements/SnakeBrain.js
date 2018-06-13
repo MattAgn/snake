@@ -1,9 +1,9 @@
 import GameElement from './GameElement'
 
 export default class SnakeBrain extends GameElement {
-  constructor({squareSize, walls}) {
-    super({ squareSize });
-    const coordinates = this.generateAvailableCoordinates(walls.coordinatesList);
+  constructor(squareSize) {
+    super(squareSize);
+    const coordinates = this.generateAvailableCoordinates();
     this.body = [{...coordinates, id: 0}];
     this.dx = 0;
     this.dy = 0; 
@@ -11,7 +11,6 @@ export default class SnakeBrain extends GameElement {
     this.boardWidth = GameElement.NB_COLUMNS * squareSize;
     this.moves = [];
     this.lastMove = {x:0, y:0}; 
-    this.walls = walls;
   }
 
   moveUp = () => {
@@ -53,7 +52,6 @@ export default class SnakeBrain extends GameElement {
     this.squareSize = newSquareSize;
     this.boardHeight = GameElement.NB_ROWS * newSquareSize;
     this.boardWidth = GameElement.NB_COLUMNS * newSquareSize;
-    this.walls = walls;
   }
 
   handleBorderCase = () => {
@@ -82,6 +80,17 @@ export default class SnakeBrain extends GameElement {
     return false;
   }
 
+  checkAteTargets = (targets) => {
+    for (let target of targets) {
+      const hasReachedTarget = this.checkDistanceFromHead(target, this.squareSize - 1);
+      if (hasReachedTarget) {
+        this.freeCoordinates({x: target.x, y: target.y});
+        return target;
+      }
+    }
+    return null;
+  }
+
   checkEatenItself = () => {
     const snakeHead = this.body[0];
     for (let i = 2; i < this.body.length; i++) {
@@ -92,9 +101,9 @@ export default class SnakeBrain extends GameElement {
     return false;
   }
 
-  checkWallCollision = () => {
+  checkWallCollision = walls => {
     const snakeHead = this.body[0];
-    for (let wall of this.walls.coordinatesList) {
+    for (let wall of walls.coordinatesList) {
       if (snakeHead.x === wall.x && snakeHead.y === wall.y) {
         return true;
       }
@@ -102,7 +111,7 @@ export default class SnakeBrain extends GameElement {
     return false
   }
 
-  run = (target) => {
+  run = (targets, walls) => {
     let move = this.moves.shift();
     if (move) {
       this.lastMove = move;
@@ -114,18 +123,18 @@ export default class SnakeBrain extends GameElement {
       y: this.body[0].y + this.dy,
       id: 0,
     };
-    const hasReachedTarget = this.checkDistanceFromHead(target, this.squareSize - 1);
-    if (!hasReachedTarget) {
-      this.body.pop();
-      // if target not reached, continues
+    const targetEaten = this.checkAteTargets(targets);
+    if (!targetEaten) {
+      const freedSquare = this.body.pop();  // if target not reached, continues
+      this.freeCoordinates({x: freedSquare.x, y: freedSquare.y})
     };
     this.body.map(bodyPart => bodyPart.id ++);
     this.body = [cellReached].concat(this.body);
     const hasEatenItself = this.checkEatenItself();
-    const hasHitWall = this.checkWallCollision();
+    const hasHitWall = this.checkWallCollision(walls);
     const hasLost = (hasHitWall || hasEatenItself );
     this.handleBorderCase();
-    return { hasReachedTarget, hasLost };
+    return { targetEaten, hasLost };
   }
 
   
