@@ -1,0 +1,2 @@
+*{margin:0;padding:0}body,html{width:100%;height:100%;font-family:lato,sans-serif}body{background:#000}#root{display:-ms-flexbox;display:flex;-ms-flex-direction:column;flex-direction:column;height:100%}#root>div:nth-child(2){height:-webkit-fit-content;height:-moz-fit-content;height:fit-content;margin:4% auto;background:#424242}canvas{margin:0 auto;display:block}
+/*# sourceMappingURL=main.1abaf5a2.css.map*/
