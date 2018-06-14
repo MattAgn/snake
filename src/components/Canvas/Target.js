@@ -7,6 +7,7 @@ const Target = ({ target }) => (
   <Circle
     x={target.x}
     y={target.y}
+    key={target.id}
     radius={target.squareSize / 2}
     fill="red"
   />

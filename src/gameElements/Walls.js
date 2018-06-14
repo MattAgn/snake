@@ -13,6 +13,7 @@ class Walls extends GameElement {
           x: this.getRandomXPosition(),
           y: this.getRandomYPosition(),
           id: i,
+          type: "wall"
         };
         coordinatesList.push(wall);
       }
@@ -20,10 +21,13 @@ class Walls extends GameElement {
       coordinatesList = levelsCoordinatesList[difficulty].map((wall, index) => ({
         id: index,
         x: wall.x * squareSize,
-        y: wall.y * squareSize
+        y: wall.y * squareSize,
+        type: 'wall'
       }));
     }
+    const unavailableSquares = [].concat(coordinatesList);
     this.coordinatesList = coordinatesList;
+    GameElement.unavailableSquares = unavailableSquares;
   }
 
   updatePosition = newSquareSize => {

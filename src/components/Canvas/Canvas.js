@@ -10,6 +10,7 @@ import GameElement from '../../gameElements/GameElement';
 import SnakeElement from '../../gameElements/SnakeBrain';
 import WallsElement from '../../gameElements/Walls';
 import TargetElement from '../../gameElements/Target';
+import { primaryColor, secondaryColor } from '../../utilities/styling';
 
 
 const Canvas = ({
@@ -21,14 +22,15 @@ const Canvas = ({
     canvasHeight = GameElement.NB_ROWS * snakes[0].squareSize;
     canvasWidth = GameElement.NB_COLUMNS * snakes[0].squareSize;
   }
+  const snakeColors = [primaryColor, secondaryColor];
   return (
     <Stage width={canvasWidth} height={canvasHeight}>
       <Layer>
         {targets.map(target => (
           <Target target={target} />
         ))}
-        {snakes.map(snake => (
-          <SnakeBody snake={snake} />
+        {snakes.map((snake, index) => (
+          <SnakeBody snake={snake} color={snakeColors[index]} />
         ))}
         <Walls walls={walls} />
       </Layer>

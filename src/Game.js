@@ -2,6 +2,7 @@ import { Component } from 'react';
 import Snake from './gameElements/SnakeBrain';
 import Target from './gameElements/Target';
 import Walls from './gameElements/Walls';
+import GameElement from './gameElements/GameElement';
 
 
 // Constants
@@ -56,6 +57,7 @@ export default class Game extends Component {
     window.addEventListener('resize', this.updateSizeCanvas);
   }
 
+  // EVENTS HANDLERS
   handleClickSettings = () => {
     if (this.state.isMenuOpened) {
       this.setState({
@@ -64,9 +66,9 @@ export default class Game extends Component {
         isGameOver: false,
       }, this.startGame)
     } else {
+      this.pauseGame();
       this.setState({
         isMenuOpened: true,
-        isGamePaused: true,
         isGameOver: false,
       })
     }
@@ -78,7 +80,7 @@ export default class Game extends Component {
   }
 
   onKeyPressRetry = (e) => {
-    if (e.keyCode || e.which) {
+    if (e.keyCode === 13 || e.which === 13) {
       this.handleRetry();
     }
   }
@@ -126,8 +128,12 @@ export default class Game extends Component {
   }
 
 
+
+  // GAME LOGIC
+
   init = () => {
     const { squareSize, settings } = this.state;
+    GameElement.unavailableSquares = [];
     const walls = new Walls(squareSize, settings);
     const snakes = [];
     const targets = [];
@@ -139,7 +145,7 @@ export default class Game extends Component {
   }
 
   startGame = () => {
-    const interval = setInterval(this.runGame, 120);
+    const interval = setInterval(this.runGame, 140);
     this.setState({interval, isGamePaused: false});
     window.addEventListener('keydown', this.move);
   }
@@ -156,7 +162,7 @@ export default class Game extends Component {
 
   getCurrentScore = () => (
     this.state.gameElements.snakes.reduce((score, snake) => (
-      score + snake.body.length), 0)
+      score + snake.body.length - 1), 0)
   )
 
   setNewHighScores = (newHighScore) => {
@@ -180,10 +186,10 @@ export default class Game extends Component {
   snakesNeedNewTargets = targetsEaten => {
     let { squareSize, settings, gameElements } = this.state;
     const { targets } = this.state.gameElements;
-    let currentTargets;
+    let currentTargets = targets;
     for (let targetEaten of targetsEaten) {
-      currentTargets = targets.filter(target => (
-        target.x !== targetEaten.x && target.y !== targetEaten.y
+      currentTargets = currentTargets.filter(target => (
+        target.x !== targetEaten.x || target.y !== targetEaten.y
       ))
     }
     while (currentTargets.length < settings.nbPlayers) {
@@ -196,8 +202,18 @@ export default class Game extends Component {
     let { snakes, targets, walls } = this.state.gameElements;
     let havePlayersLost = false;
     let targetsEaten = [];
-    for (let snake of snakes) {
-      const { targetEaten, hasLost } = snake.run(targets, walls)
+    for (let i = 0; i < snakes.length; i++) {
+      let runResults;
+      if (snakes.length > 1) {
+        if (i === 0) {
+          runResults = snakes[i].run(targets, walls, snakes[1])
+        } else {
+          runResults = snakes[i].run(targets, walls, snakes[0])
+        }
+      } else {
+        runResults = snakes[i].run(targets, walls)
+      }
+      let { hasLost, targetEaten } = runResults;
       havePlayersLost = havePlayersLost || hasLost;
       if (targetEaten) {targetsEaten.push(targetEaten);}
     }
@@ -225,7 +241,6 @@ export default class Game extends Component {
 
   move = (event) => {
     let { snakes } = this.state.gameElements;
-    console.log(event.keyCode);
     switch(event.keyCode || event.which) {
       case RIGHT_PLAYER_DOWN:  snakes[0].moveDown(); break;
       case RIGHT_PLAYER_UP:    snakes[0].moveUp(); break;
@@ -255,8 +270,8 @@ export default class Game extends Component {
       isGameOver,
       isGamePaused, 
     } = this.state;
-    const highScore = this.getCurrentHighScore();
-    const score = gameElements ? this.getCurrentScore() - 1 : 0;
+    const highScore = this.getCurrentHighScore() ;
+    const score = gameElements ? this.getCurrentScore() : 0;
     const scores = {highScore, score};
     return children({
       settings,

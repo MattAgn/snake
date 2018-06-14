@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { Rect } from 'react-konva';
 import { primaryColor } from '../../utilities/styling';
+import SnakeBrain from '../../gameElements/SnakeBrain';
 
 class SnakeBody extends Component {
+  static propTypes = {
+    snake: PropTypes.instanceOf(SnakeBrain).isRequired,
+    color: PropTypes.string.isRequired,
+  }
+  
   componentDidUpdate(prevProps) {
     if (prevProps.snake !== this.props.snake) {
       return true;
@@ -12,7 +18,7 @@ class SnakeBody extends Component {
   }
 
   render() {
-    const { snake } = this.props;
+    const { snake, color } = this.props;
     return (
       <React.Fragment>
         {snake.body.map(bodyPart => (
@@ -22,7 +28,7 @@ class SnakeBody extends Component {
             y={bodyPart.y}
             height={snake.squareSize}
             width={snake.squareSize}
-            fill={primaryColor}
+            fill={color}
           />
         ))}
       </React.Fragment>

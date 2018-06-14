@@ -70,7 +70,7 @@ const Header = ({
   highScore,
   isMenuOpened,
   isGamePaused,
-  handleClickPlay,
+  handlePauseGame,
   onClickSettings,
   settings,
   ...menuProps
@@ -83,7 +83,7 @@ const Header = ({
       <IconButton
         style={styles.button}
         iconStyle={styles.icon}
-        onClick={handleClickPlay}
+        onClick={handlePauseGame}
         onMouseDown={preventFocus}
       >
         { isGamePaused ?

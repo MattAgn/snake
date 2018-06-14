@@ -7,17 +7,19 @@ export default class GameElement {
   static get NB_COLUMNS() {return 30}
   
   // static get unavailableSquares() {return GameElement.unavailableSquares}
-  // static set unavailableSquares(unavailableSquares) {}
+  // static set unavailableSquares(unavailableSquares) {console.log(unavailableSquares)}
 
-  generateAvailableCoordinates = () => {
+  generateAvailableCoordinates = (type) => {
     const unavailableSquares = GameElement.unavailableSquares;
+    console.log("unavailable", unavailableSquares)
     let coordinates = {
       y: this.getRandomYPosition(), 
       x: this.getRandomXPosition(),
+      type,
     };
     unavailableSquares.forEach(element => {
       if (element.x === coordinates.x && element.y === coordinates.y) {
-        coordinates = this.generateAvailableCoordinates(unavailableSquares);
+        coordinates = this.generateAvailableCoordinates(type);
       } 
     })
     unavailableSquares.push(coordinates);
@@ -25,11 +27,12 @@ export default class GameElement {
     return coordinates;  
   }
 
-  freeCoordinates = ({x, y}) => {
+  freeCoordinates = ({x, y}, type='snake') => {
     let unavailableSquares = GameElement.unavailableSquares;
     unavailableSquares = unavailableSquares.filter(el => (
-      el.x !== x && el.y !== y
+      el.x !== x || el.y !== y
     ))
+    if (type === "target") console.log("freed coordinates")
     GameElement.unavailableSquares = unavailableSquares;
   }
 
@@ -40,4 +43,3 @@ export default class GameElement {
     Math.floor(Math.random() * GameElement.NB_ROWS) * this.squareSize;
 }
 
-GameElement.unavailableSquares = [];

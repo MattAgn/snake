@@ -3,7 +3,7 @@ import GameElement from './GameElement'
 export default class SnakeBrain extends GameElement {
   constructor(squareSize) {
     super(squareSize);
-    const coordinates = this.generateAvailableCoordinates();
+    const coordinates = this.generateAvailableCoordinates("snake");
     this.body = [{...coordinates, id: 0}];
     this.dx = 0;
     this.dy = 0; 
@@ -84,7 +84,8 @@ export default class SnakeBrain extends GameElement {
     for (let target of targets) {
       const hasReachedTarget = this.checkDistanceFromHead(target, this.squareSize - 1);
       if (hasReachedTarget) {
-        this.freeCoordinates({x: target.x, y: target.y});
+        console.log("ate target")
+        this.freeCoordinates({x: target.x, y: target.y}, 'target');
         return target;
       }
     }
@@ -101,17 +102,17 @@ export default class SnakeBrain extends GameElement {
     return false;
   }
 
-  checkWallCollision = walls => {
+  checkCollision = elements => {
     const snakeHead = this.body[0];
-    for (let wall of walls.coordinatesList) {
-      if (snakeHead.x === wall.x && snakeHead.y === wall.y) {
+    for (let element of elements) {
+      if (snakeHead.x === element.x && snakeHead.y === element.y) {
         return true;
       }
     }
     return false
   }
 
-  run = (targets, walls) => {
+  run = (targets, walls, snakeFriend) => {
     let move = this.moves.shift();
     if (move) {
       this.lastMove = move;
@@ -122,17 +123,23 @@ export default class SnakeBrain extends GameElement {
       x: this.body[0].x + this.dx,
       y: this.body[0].y + this.dy,
       id: 0,
+      type: "snake"
     };
+    GameElement.unavailableSquares.push(cellReached);
+    this.body.map(bodyPart => bodyPart.id ++);
+    this.body = [cellReached].concat(this.body);
     const targetEaten = this.checkAteTargets(targets);
     if (!targetEaten) {
       const freedSquare = this.body.pop();  // if target not reached, continues
       this.freeCoordinates({x: freedSquare.x, y: freedSquare.y})
     };
-    this.body.map(bodyPart => bodyPart.id ++);
-    this.body = [cellReached].concat(this.body);
     const hasEatenItself = this.checkEatenItself();
-    const hasHitWall = this.checkWallCollision(walls);
-    const hasLost = (hasHitWall || hasEatenItself );
+    const hasHitWall = this.checkCollision(walls.coordinatesList);
+    let hasHitFriend = false;
+    if (snakeFriend) {
+      hasHitFriend = this.checkCollision(snakeFriend.body);
+    } 
+    const hasLost = (hasHitWall || hasEatenItself || hasHitFriend);
     this.handleBorderCase();
     return { targetEaten, hasLost };
   }

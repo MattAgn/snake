@@ -3,9 +3,11 @@ import GameElement from './GameElement';
 class Target extends GameElement {
   constructor(squareSize) {
     super(squareSize);
-    const coordinates = this.generateAvailableCoordinates();
-    this.x = coordinates.x + squareSize / 2;
-    this.y = coordinates.y + squareSize / 2;
+    const coordinates = this.generateAvailableCoordinates("target");
+    this.x = coordinates.x + Math.floor(squareSize / 2);
+    this.y = coordinates.y + Math.floor(squareSize / 2);
+    this.id = Math.floor(this.x * 100 * this.y * Math.random())
+    console.log("coordTarget", {x: this.x, y: this.y});
   }
 
   updatePosition = newSquareSize => {
