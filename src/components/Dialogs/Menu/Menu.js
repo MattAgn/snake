@@ -26,6 +26,29 @@ const styles = {
   },
 };
 
+const unlockLevelAfter = scoreNeeded => `Eat ${scoreNeeded} targets to unlock the next`;
+
+const scoresNeeded = [70, 60, 50, 40, 40, 30];
+
+const difficultyInformation = {
+  classic: {
+    0: 'Just feed your snake with some apples',
+    1: 'Reach the targets in a board filled with 7 radomly placed obstacles',
+    2: 'Find your target through 15 obstacles'
+  },
+  levels: {
+    1: unlockLevelAfter(scoresNeeded[1 - 1]),
+    2: unlockLevelAfter(scoresNeeded[2 - 1]),
+    3: unlockLevelAfter(scoresNeeded[3 - 1]),
+    4: unlockLevelAfter(scoresNeeded[4 - 1]),
+    5: unlockLevelAfter(scoresNeeded[5 - 1]),
+    6: unlockLevelAfter(scoresNeeded[6 - 1]),
+  }
+}
+
+function isLevelUnlocked(level, highScores) {
+  return (highScores['levels'][level] > scoresNeeded[level - 1]);
+}
 
 export default class Menu extends Component {
   state = {
@@ -91,6 +114,7 @@ export default class Menu extends Component {
             handleClickDifficulty={handleClickDifficulty} 
             buttonsBgColor={difficultyButtonsBgColor}/>
         : <LevelsSetting
+            settings={settings}
             highScores={highScores}
             handleClickDifficulty={handleClickDifficulty} 
             buttonsBgColor={levelsButtonsBgColor}/>

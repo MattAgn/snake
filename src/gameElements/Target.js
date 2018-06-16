@@ -7,7 +7,7 @@ class Target extends GameElement {
     this.x = coordinates.x + Math.floor(squareSize / 2);
     this.y = coordinates.y + Math.floor(squareSize / 2);
     this.id = Math.floor(this.x * 100 * this.y * Math.random())
-    console.log("coordTarget", {x: this.x, y: this.y});
+    console.log("coordTarget", coordinates);
   }
 
   updatePosition = newSquareSize => {

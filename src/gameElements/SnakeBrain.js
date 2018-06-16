@@ -84,8 +84,12 @@ export default class SnakeBrain extends GameElement {
     for (let target of targets) {
       const hasReachedTarget = this.checkDistanceFromHead(target, this.squareSize - 1);
       if (hasReachedTarget) {
-        console.log("ate target")
-        this.freeCoordinates({x: target.x, y: target.y}, 'target');
+        console.log("ate target");
+        const targetCoordinates = {
+          x: target.x - Math.floor(this.squareSize/2),
+          y: target.y - Math.floor(this.squareSize/2)
+        }
+        this.freeCoordinates(targetCoordinates, 'target');
         return target;
       }
     }

@@ -264,7 +264,8 @@ export default class Game extends Component {
   render() {
     const { children } = this.props;
     const {
-      settings, 
+      settings,
+      highScores, 
       gameElements, 
       isMenuOpened, 
       isGameOver,
@@ -272,7 +273,7 @@ export default class Game extends Component {
     } = this.state;
     const highScore = this.getCurrentHighScore() ;
     const score = gameElements ? this.getCurrentScore() : 0;
-    const scores = {highScore, score};
+    const scores = {highScores, score};
     return children({
       settings,
       gameElements,

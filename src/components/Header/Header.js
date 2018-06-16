@@ -67,7 +67,7 @@ function getMode(settings) {
 
 const Header = ({
   score,
-  highScore,
+  highScores,
   isMenuOpened,
   isGamePaused,
   handlePauseGame,
@@ -77,7 +77,9 @@ const Header = ({
 }) => (
   <Row>
     <Information>Score: {score}</Information>
-    <Information>High Score: {highScore}   {getMode(settings)}</Information>
+    <Information>
+      High Score: {highScores[settings.nbPlayers][settings.mode][settings.difficulty]}  {getMode(settings)}
+    </Information>
     <ButtonsContainer>
 
       <IconButton
@@ -99,6 +101,7 @@ const Header = ({
       <Menu
         {...menuProps}
         settings={settings}
+        highScores={highScores}
         onClickSettings={onClickSettings}
       />}
   </Row>
