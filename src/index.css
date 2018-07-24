@@ -19,7 +19,6 @@ body{
 #root > div:nth-child(2) {
   height: fit-content;
   margin: 4% auto;
-  background: #424242;
 }
 
 canvas {

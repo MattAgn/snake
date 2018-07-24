@@ -10,13 +10,22 @@ import { primaryColor } from './utilities/styling';
 
 const muiTheme = getMuiTheme({
   palette: {
-    primary1Color: primaryColor,
-  },
+    primary1Color: primaryColor
+  }
 });
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+  padding: 3%;
+`;
 
 const Controls = styled.h3`
   font-weight: 400;
-  color: white;  
+  color: white;
   text-align: center;
 `;
 
@@ -32,29 +41,30 @@ const App = () => (
           handleClickSettings,
           isGameOver,
           ...headerProps
-          }) => (
-            <Fragment>
-              <Header
-                {...headerProps}
-                {...scores}
-                settings={settings}
-                onClickSettings={handleClickSettings}
-              />
+        }) => (
+          <Container>
+            <Header
+              {...headerProps}
+              {...scores}
+              settings={settings}
+              onClickSettings={handleClickSettings}
+            />
 
-              {gameElements && <Canvas {...gameElements} />}
+            {gameElements && <Canvas {...gameElements} />}
 
-              <Controls>
-                Use the arrow keys to move, and press the space bar to pause the game
+            <Controls>
+              Use the arrow keys to move, and press the space bar to pause the
+              game
               </Controls>
 
-              { isGameOver &&
-                <GameOver
-                  {...scores}
-                  onClickSettings={handleClickSettings}
-                  onClickRetry={handleClickRetry}
-                />
-              }
-            </Fragment>
+            {isGameOver && (
+              <GameOver
+                {...scores}
+                onClickSettings={handleClickSettings}
+                onClickRetry={handleClickRetry}
+              />
+            )}
+          </Container>
         )}
       </Game>
     </Fragment>

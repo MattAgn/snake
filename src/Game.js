@@ -30,12 +30,12 @@ export default class Game extends Component {
       2: {
         classic: { 0: 0, 1: 0, 2: 0 },
         levels: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 }
-      },  
+      },
     }
     //TODO: check highScore structure
     let highScores = savedHighScores ? JSON.parse(savedHighScores) : defaultHighScores;
     const squareSize = Math.round(Math.sqrt(
-      Math.pow(window.innerHeight, 2) + 
+      Math.pow(window.innerHeight, 2) +
       Math.pow(window.innerWidth, 2)) / 50);
     this.state = {
       settings: {
@@ -49,7 +49,7 @@ export default class Game extends Component {
       isGamePaused: true,
       isMenuOpened: true,
       isGameOver: false,
-    } 
+    }
   }
 
   componentDidMount() {
@@ -76,7 +76,7 @@ export default class Game extends Component {
 
   handleRetry = () => {
     window.removeEventListener('keypress', this.onKeyPressRetry)
-    this.setState({isGameOver: false}, this.generateNewGame);
+    this.setState({ isGameOver: false }, this.generateNewGame);
   }
 
   onKeyPressRetry = (e) => {
@@ -96,15 +96,15 @@ export default class Game extends Component {
   handleClickDifficulty = value => () => {
     const { settings } = this.state;
     settings.difficulty = value;
-    this.setState({settings}, this.init);
+    this.setState({ settings }, this.init);
   }
 
   //TODO: to factorise with above ?
   handleClickMode = value => () => {
-    const {settings} = this.state;
+    const { settings } = this.state;
     settings.mode = value;
     settings.difficulty = 1;
-    this.setState({settings}, this.init)
+    this.setState({ settings }, this.init)
   }
 
   handleClickNbPlayers = value => () => {
@@ -112,19 +112,19 @@ export default class Game extends Component {
     settings.nbPlayers = value;
     settings.mode = 'classic';
     settings.difficulty = 1;
-    this.setState({settings}, this.init);
+    this.setState({ settings }, this.init);
   }
 
 
   updateSizeCanvas = () => {
     const newSquareSize = Math.round(Math.sqrt(
-      Math.pow(window.innerHeight, 2) + 
+      Math.pow(window.innerHeight, 2) +
       Math.pow(window.innerWidth, 2)) / 50);
     const { snakes, targets, walls } = this.state.gameElements;
     walls.updatePosition(newSquareSize);
-    for (let target of targets) {target.updatePosition(newSquareSize);}
-    for (let snake of snakes) {snake.updatePosition(newSquareSize, walls);}
-    this.setState({gameElements: { walls, snakes, targets }, squareSize: newSquareSize});
+    for (let target of targets) { target.updatePosition(newSquareSize); }
+    for (let snake of snakes) { snake.updatePosition(newSquareSize, walls); }
+    this.setState({ gameElements: { walls, snakes, targets }, squareSize: newSquareSize });
   }
 
 
@@ -141,12 +141,12 @@ export default class Game extends Component {
       snakes.push(new Snake(squareSize));
       targets.push(new Target(squareSize));
     }
-    this.setState({gameElements: {walls, snakes, targets}}); 
+    this.setState({ gameElements: { walls, snakes, targets } });
   }
 
   startGame = () => {
     const interval = setInterval(this.runGame, 140);
-    this.setState({interval, isGamePaused: false});
+    this.setState({ interval, isGamePaused: false });
     window.addEventListener('keydown', this.move);
   }
 
@@ -154,7 +154,7 @@ export default class Game extends Component {
     this.init();
     this.startGame();
   }
-  
+
   getCurrentHighScore = () => {
     const { nbPlayers, mode, difficulty } = this.state.settings;
     return (this.state.highScores[nbPlayers][mode][difficulty]);
@@ -167,9 +167,9 @@ export default class Game extends Component {
 
   setNewHighScores = (newHighScore) => {
     const { highScores } = this.state;
-    const  { nbPlayers, mode, difficulty } = this.state.settings;
+    const { nbPlayers, mode, difficulty } = this.state.settings;
     highScores[nbPlayers][mode][difficulty] = newHighScore;
-    this.setState({highScores});
+    this.setState({ highScores });
     return highScores;
   }
 
@@ -181,7 +181,7 @@ export default class Game extends Component {
       highScores = this.setNewHighScores(currentScore);
       localStorage.setItem('highScores', JSON.stringify(highScores));
     }
-  } 
+  }
 
   snakesNeedNewTargets = targetsEaten => {
     let { squareSize, settings, gameElements } = this.state;
@@ -215,7 +215,7 @@ export default class Game extends Component {
       }
       let { hasLost, targetEaten } = runResults;
       havePlayersLost = havePlayersLost || hasLost;
-      if (targetEaten) {targetsEaten.push(targetEaten);}
+      if (targetEaten) { targetsEaten.push(targetEaten); }
     }
     if (targetsEaten.length > 0) {
       this.checkNewHighScore();
@@ -225,35 +225,35 @@ export default class Game extends Component {
       window.removeEventListener('keydown', this.move);
       window.addEventListener('keypress', this.onKeyPressRetry);
       this.pauseGame();
-      this.setState(() => ({isGameOver: true}));  
+      this.setState(() => ({ isGameOver: true }));
     }
     else {
-      this.setState(() => ({ gameElements: {walls, snakes, targets}}));
+      this.setState(() => ({ gameElements: { walls, snakes, targets } }));
     }
   }
 
   pauseGame = () => {
     let interval = this.state.interval;
-    clearInterval(interval); 
+    clearInterval(interval);
     interval = null;
-    this.setState(() => ({interval, isGamePaused: true}));
+    this.setState(() => ({ interval, isGamePaused: true }));
   }
 
   move = (event) => {
     let { snakes } = this.state.gameElements;
-    switch(event.keyCode || event.which) {
-      case RIGHT_PLAYER_DOWN:  snakes[0].moveDown(); break;
-      case RIGHT_PLAYER_UP:    snakes[0].moveUp(); break;
-      case RIGHT_PLAYER_LEFT:  snakes[0].moveLeft(); break;
+    switch (event.keyCode || event.which) {
+      case RIGHT_PLAYER_DOWN: snakes[0].moveDown(); break;
+      case RIGHT_PLAYER_UP: snakes[0].moveUp(); break;
+      case RIGHT_PLAYER_LEFT: snakes[0].moveLeft(); break;
       case RIGHT_PLAYER_RIGHT: snakes[0].moveRight(); break;
-      case PAUSE:       this.handlePauseGame(); break;  
+      case PAUSE: this.handlePauseGame(); break;
       default: break;
     }
     if (snakes.length > 1) {
-      switch(event.keyCode || event.which) {
-        case LEFT_PLAYER_DOWN:  snakes[1].moveDown(); break;
-        case LEFT_PLAYER_UP:    snakes[1].moveUp(); break;
-        case LEFT_PLAYER_LEFT:  snakes[1].moveLeft(); break;
+      switch (event.keyCode || event.which) {
+        case LEFT_PLAYER_DOWN: snakes[1].moveDown(); break;
+        case LEFT_PLAYER_UP: snakes[1].moveUp(); break;
+        case LEFT_PLAYER_LEFT: snakes[1].moveLeft(); break;
         case LEFT_PLAYER_RIGHT: snakes[1].moveRight(); break;
         default: break;
       }
@@ -265,15 +265,15 @@ export default class Game extends Component {
     const { children } = this.props;
     const {
       settings,
-      highScores, 
-      gameElements, 
-      isMenuOpened, 
+      highScores,
+      gameElements,
+      isMenuOpened,
       isGameOver,
-      isGamePaused, 
+      isGamePaused,
     } = this.state;
-    const highScore = this.getCurrentHighScore() ;
+    const highScore = this.getCurrentHighScore();
     const score = gameElements ? this.getCurrentScore() : 0;
-    const scores = {highScores, score};
+    const scores = { highScore, score, highScores };
     return children({
       settings,
       gameElements,

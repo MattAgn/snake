@@ -9,10 +9,9 @@ import PauseIcon from 'material-ui/svg-icons/av/pause';
 import { lightGrey, absolute } from '../../utilities/styling';
 import Menu from '../Dialogs/Menu/Menu';
 
-
 const Row = styled.div`
   display: flex;
-  margin: 2% auto 0 auto;
+  margin: 0 auto;
   width: 95%;
   justify-content: center;
   position: relative;
@@ -38,12 +37,12 @@ const styles = {
     height: 30,
     width: 30,
     padding: 0,
-    margin: '0 10%',
+    margin: '0 10%'
   },
   icon: {
     height: 30,
-    width: 30,
-  },
+    width: 30
+  }
 };
 
 function preventFocus(e) {
@@ -67,6 +66,7 @@ function getMode(settings) {
 
 const Header = ({
   score,
+  highScore,
   highScores,
   isMenuOpened,
   isGamePaused,
@@ -78,39 +78,45 @@ const Header = ({
   <Row>
     <Information>Score: {score}</Information>
     <Information>
-      High Score: {highScores[settings.nbPlayers][settings.mode][settings.difficulty]}  {getMode(settings)}
+      High Score: {highScore} {getMode(settings)}
     </Information>
     <ButtonsContainer>
-
       <IconButton
         style={styles.button}
         iconStyle={styles.icon}
         onClick={handlePauseGame}
         onMouseDown={preventFocus}
       >
-        { isGamePaused ?
+        {isGamePaused ? (
           <PlayArrowIcon color={lightGrey} />
-        : <PauseIcon color={lightGrey} />}
+        ) : (
+          <PauseIcon color={lightGrey} />
+        )}
       </IconButton>
-      <IconButton style={styles.button} iconStyle={styles.icon} onClick={onClickSettings} >
+      <IconButton
+        style={styles.button}
+        iconStyle={styles.icon}
+        onClick={onClickSettings}
+      >
         <SettingsIcon color={lightGrey} />
       </IconButton>
     </ButtonsContainer>
 
-    { isMenuOpened &&
+    {isMenuOpened && (
       <Menu
         {...menuProps}
         settings={settings}
         highScores={highScores}
         onClickSettings={onClickSettings}
-      />}
+      />
+    )}
   </Row>
 );
 
 Header.propTypes = {
   score: PropTypes.number.isRequired,
   highScore: PropTypes.number.isRequired,
-  isMenuOpened: PropTypes.bool.isRequired,
+  isMenuOpened: PropTypes.bool.isRequired
 };
 
 export default Header;

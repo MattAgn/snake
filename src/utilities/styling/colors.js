@@ -9,5 +9,5 @@ export default {
   grey,
   black,
   primaryColor,
-  secondaryColor,
+  secondaryColor
 };

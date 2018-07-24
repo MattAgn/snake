@@ -9,34 +9,42 @@ const ButtonRow = styled.div`
   justify-content: center;
   width: fit-content;
   min-width: 40%;
-  &:first-of-type{
+  &:first-of-type {
     margin-bottom: 4%;
   }
 `;
 
-const LevelSettingRow = styled(SettingRow)`
+const LevelSettingRow = styled(SettingRow) `
   flex-direction: column;
 `;
 
 const styles = {
   buttons: {
-    margin: '0 5%',
-  },
+    margin: '0 5%'
+  }
 };
 
-const unlockLevelAfter = scoreNeeded => `Eat ${scoreNeeded} targets to unlock the next level`;
+const unlockLevelAfter = scoreNeeded =>
+  `Eat ${scoreNeeded} targets to unlock the next level`;
 
 const scoresNeeded = [70, 60, 50, 40, 40];
 
 const LevelsSetting = ({
-  handleClickDifficulty, buttonsBgColor, settings, highScores,
+  handleClickDifficulty,
+  buttonsBgColor,
+  settings,
+  highScores
 }) => {
-  const isLevelUnlocked = level => (highScores[settings.nbPlayers].levels[level] > scoresNeeded[level - 2]);
+  const isLevelUnlocked = level =>
+    highScores[settings.nbPlayers].levels[level] > scoresNeeded[level - 2];
 
   return (
     <LevelSettingRow
       settingName="Levels"
-      indication={unlockLevelAfter(scoresNeeded[settings.difficulty])}
+      indication={
+        settings.difficulty >= 5 &&
+        unlockLevelAfter(scoresNeeded[settings.difficulty - 1])
+      }
     >
       <ButtonRow>
         <RaisedButton
@@ -77,7 +85,7 @@ const LevelsSetting = ({
         />
         <RaisedButton
           label="6"
-          disabled={!isLevelUnlocked(6, highScores)}
+          // disabled={!isLevelUnlocked(6, highScores)}
           backgroundColor={buttonsBgColor[6]}
           style={styles.buttons}
           onClick={handleClickDifficulty(6)}

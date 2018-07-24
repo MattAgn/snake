@@ -26,51 +26,28 @@ const styles = {
   },
 };
 
-const unlockLevelAfter = scoreNeeded => `Eat ${scoreNeeded} targets to unlock the next`;
-
-const scoresNeeded = [70, 60, 50, 40, 40, 30];
-
-const difficultyInformation = {
-  classic: {
-    0: 'Just feed your snake with some apples',
-    1: 'Reach the targets in a board filled with 7 radomly placed obstacles',
-    2: 'Find your target through 15 obstacles'
-  },
-  levels: {
-    1: unlockLevelAfter(scoresNeeded[1 - 1]),
-    2: unlockLevelAfter(scoresNeeded[2 - 1]),
-    3: unlockLevelAfter(scoresNeeded[3 - 1]),
-    4: unlockLevelAfter(scoresNeeded[4 - 1]),
-    5: unlockLevelAfter(scoresNeeded[5 - 1]),
-    6: unlockLevelAfter(scoresNeeded[6 - 1]),
-  }
-}
-
-function isLevelUnlocked(level, highScores) {
-  return (highScores['levels'][level] > scoresNeeded[level - 1]);
-}
 
 export default class Menu extends Component {
   state = {
     difficultyButtonsBgColor: [],
-    modeButtonsBgColor: {classic: '#FFF', levels: '#FFF'},
+    modeButtonsBgColor: { classic: '#FFF', levels: '#FFF' },
     levelsButtonsBgColor: [],
-    playersButtonsBgColor: {1: '#FFF', 2: '#FFF'},
+    playersButtonsBgColor: { 1: '#FFF', 2: '#FFF' },
   }
 
   static getDerivedStateFromProps(props, state) {
     const { difficulty, mode, nbPlayers } = props.settings;
     let { modeButtonsBgColor } = state;
-    let playersButtonsBgColor = {1: '#FFF', 2: '#FFF'};
+    let playersButtonsBgColor = { 1: '#FFF', 2: '#FFF' };
     playersButtonsBgColor[nbPlayers] = primaryColor;
     if (mode === 'classic') {
       const difficultyButtonsBgColor = Menu.getBgColor(difficulty, 3);
-      modeButtonsBgColor = {classic: primaryColor, levels: '#FFF'};
-      return ({modeButtonsBgColor, difficultyButtonsBgColor, playersButtonsBgColor});
+      modeButtonsBgColor = { classic: primaryColor, levels: '#FFF' };
+      return ({ modeButtonsBgColor, difficultyButtonsBgColor, playersButtonsBgColor });
     } else if (mode === 'levels') {
       const levelsButtonsBgColor = Menu.getBgColor(difficulty, 6);
-      modeButtonsBgColor = {classic: '#FFF', levels: primaryColor};
-      return ({levelsButtonsBgColor, modeButtonsBgColor, playersButtonsBgColor})
+      modeButtonsBgColor = { classic: '#FFF', levels: primaryColor };
+      return ({ levelsButtonsBgColor, modeButtonsBgColor, playersButtonsBgColor })
     }
   }
 
@@ -81,45 +58,45 @@ export default class Menu extends Component {
   }
 
   render() {
-    const { 
-      onClickSettings, 
-      handleClickDifficulty, 
-      handleClickMode, 
+    const {
+      onClickSettings,
+      handleClickDifficulty,
+      handleClickMode,
       handleClickNbPlayers,
-      settings, 
-      highScores 
+      settings,
+      highScores
     } = this.props;
-    const { 
-      modeButtonsBgColor, 
+    const {
+      modeButtonsBgColor,
       difficultyButtonsBgColor,
-      levelsButtonsBgColor, 
+      levelsButtonsBgColor,
       playersButtonsBgColor
     } = this.state;
     return (
       <Dialog>
         <DialogTitle>Snake Game</DialogTitle>
 
-        <PlayerSetting 
-          onClickNbPlayers={handleClickNbPlayers} 
+        <PlayerSetting
+          onClickNbPlayers={handleClickNbPlayers}
           buttonsBgColor={playersButtonsBgColor}
         />
 
-        <ModeSetting 
-          onClickMode={handleClickMode} 
+        <ModeSetting
+          onClickMode={handleClickMode}
           buttonsBgColor={modeButtonsBgColor}
         />
 
-        { settings.mode === 'classic' ?
-          <DifficultySetting 
-            handleClickDifficulty={handleClickDifficulty} 
-            buttonsBgColor={difficultyButtonsBgColor}/>
-        : <LevelsSetting
+        {settings.mode === 'classic' ?
+          <DifficultySetting
+            handleClickDifficulty={handleClickDifficulty}
+            buttonsBgColor={difficultyButtonsBgColor} />
+          : <LevelsSetting
             settings={settings}
             highScores={highScores}
-            handleClickDifficulty={handleClickDifficulty} 
-            buttonsBgColor={levelsButtonsBgColor}/>
+            handleClickDifficulty={handleClickDifficulty}
+            buttonsBgColor={levelsButtonsBgColor} />
         }
-        
+
 
         <PlayButtonRow>
           <FlatButton
