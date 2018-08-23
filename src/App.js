@@ -2,11 +2,13 @@ import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import Header from './components/Header/Header';
-import Canvas from './components/Canvas/Canvas';
-import GameOver from './components/Dialogs/GameOver';
-import Game from './Game';
+
 import { primaryColor } from './utilities/styling';
+
+import Header from './components/header/Header';
+import Canvas from './components/canvas/Canvas';
+import GameOver from './components/game-over/GameOver';
+import GameLogic from './GameLogic';
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -32,7 +34,7 @@ const Controls = styled.h3`
 const App = () => (
   <MuiThemeProvider muiTheme={muiTheme}>
     <Fragment>
-      <Game>
+      <GameLogic>
         {({
           scores,
           gameElements,
@@ -55,7 +57,7 @@ const App = () => (
             <Controls>
               Use the arrow keys to move, and press the space bar to pause the
               game
-              </Controls>
+            </Controls>
 
             {isGameOver && (
               <GameOver
@@ -66,7 +68,7 @@ const App = () => (
             )}
           </Container>
         )}
-      </Game>
+      </GameLogic>
     </Fragment>
   </MuiThemeProvider>
 );

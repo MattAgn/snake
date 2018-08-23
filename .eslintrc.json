@@ -1,13 +1,12 @@
 {
-  "plugins": [
-    "prettier"
-  ],
+  "plugins": ["prettier"],
   "extends": "airbnb",
   "rules": {
     "react/jsx-filename-extension": "off",
     "no-underscore-dangle": "off",
     "no-plusplus": "off",
     "comma-dangle": "off",
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "react/no-unused-prop-types": "off"
   }
 }
