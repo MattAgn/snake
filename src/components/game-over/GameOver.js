@@ -90,8 +90,6 @@ const ScoreItem = styled.h2`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
-  /* flex-wrap: wrap; */
-  /* width: fit-content; */
   min-width: 40%;
 `;
 

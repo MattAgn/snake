@@ -21,11 +21,11 @@ const StyledButton = styled.button`
   border-color: ${primaryColor};
   background-color: ${props => (props.isPrimary ? primaryColor : '#FFF')};
   color: ${props => (props.isPrimary ? '#FFF' : primaryColor)};
-  ${elevation[4]};
+  ${elevation[3]};
   &:hover {
     background-color: ${tintColor};
     border-color: ${tintColor};
-    ${elevation[3]};
+    ${elevation[4]};
     transition: box-shadow 300ms ease-in-out;
   }
   &:hover :first-child {
