@@ -18,26 +18,37 @@ const GameOver = ({
   onClickSettings,
   hasUnlockedLevel
 }) => (
-  <Dialog>
-    <DialogTitle>Game Over !</DialogTitle>
+  <StyledDialog>
+    <DialogTitle>
+      {hasUnlockedLevel
+        ? 'Congrats! You unlocked the next level!'
+        : 'Game Over!'}
+    </DialogTitle>
     <ScoresRow>
       <ScoreItem>Score: {score}</ScoreItem>
       <ScoreItem>High Score: {highScore}</ScoreItem>
     </ScoresRow>
     <ButtonContainer>
       {hasUnlockedLevel && (
-        <Button onClick={onClickNextLevel} isPrimary>
-          <NextIcon color="#FFF" />
+        <Button onClick={onClickNextLevel} isPrimary title="Next level">
+          <NextIcon color="#FFF" style={iconStyle} />
         </Button>
       )}
-      <Button onClick={onClickRetry} isPrimary={!hasUnlockedLevel}>
-        <RetryIcon color={hasUnlockedLevel ? primaryColor : '#FFF'} />
+      <Button
+        onClick={onClickRetry}
+        isPrimary={!hasUnlockedLevel}
+        title="Retry"
+      >
+        <RetryIcon
+          color={hasUnlockedLevel ? primaryColor : '#FFF'}
+          style={iconStyle}
+        />
       </Button>
-      <Button onClick={onClickSettings} isPrimary={false}>
-        <SettingsIcon color={primaryColor} />
+      <Button onClick={onClickSettings} isPrimary={false} title="Options">
+        <SettingsIcon color={primaryColor} style={iconStyle} />
       </Button>
     </ButtonContainer>
-  </Dialog>
+  </StyledDialog>
 );
 
 GameOver.propTypes = {
@@ -51,8 +62,20 @@ GameOver.propTypes = {
 
 GameOver.defaultProps = {
   onClickNextLevel: null,
-  hasUnlockedLevel: false
+  hasUnlockedLevel: true
 };
+
+const iconStyle = {
+  height: '100%',
+  width: '100%'
+};
+
+const StyledDialog = styled(Dialog)`
+  padding: 4% 5%;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+`;
 
 const ScoresRow = styled.div`
   display: flex;
@@ -66,11 +89,10 @@ const ScoreItem = styled.h2`
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
-  margin: 4% 0;
-  width: fit-content;
+  justify-content: space-evenly;
+  /* flex-wrap: wrap; */
+  /* width: fit-content; */
   min-width: 40%;
-  width: 100%;
 `;
 
 export default GameOver;
