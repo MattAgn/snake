@@ -3,43 +3,46 @@ export default class GameElement {
     this.squareSize = squareSize;
   }
 
-  static get NB_ROWS() {return 15}
-  static get NB_COLUMNS() {return 30}
-  
+  static get NB_ROWS() {
+    return 15;
+  }
+  static get NB_COLUMNS() {
+    return 30;
+  }
+
   // static get unavailableSquares() {return GameElement.unavailableSquares}
   // static set unavailableSquares(unavailableSquares) {console.log(unavailableSquares)}
 
-  generateAvailableCoordinates = (type) => {
+  generateAvailableCoordinates = type => {
     const unavailableSquares = GameElement.unavailableSquares;
-    console.log("unavailable", unavailableSquares)
+    // console.log("unavailable", unavailableSquares)
     let coordinates = {
-      y: this.getRandomYPosition(), 
+      y: this.getRandomYPosition(),
       x: this.getRandomXPosition(),
-      type,
+      type
     };
     unavailableSquares.forEach(element => {
       if (element.x === coordinates.x && element.y === coordinates.y) {
         coordinates = this.generateAvailableCoordinates(type);
-      } 
-    })
+      }
+    });
     unavailableSquares.push(coordinates);
     GameElement.unavailableSquares = unavailableSquares;
-    return coordinates;  
-  }
+    return coordinates;
+  };
 
-  freeCoordinates = ({x, y}, type='snake') => {
+  freeCoordinates = ({ x, y }, type = 'snake') => {
     let unavailableSquares = GameElement.unavailableSquares;
-    unavailableSquares = unavailableSquares.filter(el => (
-      el.x !== x || el.y !== y
-    ))
-    if (type === "target") console.log("freed coordinates")
+    unavailableSquares = unavailableSquares.filter(
+      el => el.x !== x || el.y !== y
+    );
+    // if (type === "target") console.log("freed coordinates")
     GameElement.unavailableSquares = unavailableSquares;
-  }
+  };
 
-  getRandomXPosition = x => 
+  getRandomXPosition = x =>
     Math.floor(Math.random() * GameElement.NB_COLUMNS) * this.squareSize;
 
-  getRandomYPosition = y => 
+  getRandomYPosition = y =>
     Math.floor(Math.random() * GameElement.NB_ROWS) * this.squareSize;
 }
-

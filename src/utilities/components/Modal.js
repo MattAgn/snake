@@ -1,17 +1,22 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import styled from 'styled-components';
 import { animated, Transition } from 'react-spring';
 import { elevation, absolute, fillParent, flexCenter } from '../styling';
 
 import Portal from './Portal';
 
-const Modal = ({ children, className }) => (
+const Modal = ({
+ children, className, isOpen, config 
+}) => (
   <Portal>
     <Transition
       native
-      from={{ opacity: 0.5, bgOpacity: 0, y: '-100px' }}
+      config={config}
+      from={{ opacity: 0.2, bgOpacity: 0, y: '-50vh' }}
       enter={{ opacity: 1, bgOpacity: 0.6, y: '0px' }}
-      leave={{ opacity: 0.5, bgOpacity: 0, y: '100px' }}
+      leave={{ opacity: 0.2, bgOpacity: 0, y: '50vh' }}
     >
       {styles => (
         <ModalWrapper>
@@ -57,5 +62,15 @@ const Background = styled(animated.div)`
   z-index: 3;
   opacity: 0.5;
 `;
+
+Modal.propTypes = {
+  children: PropTypes.array.isRequired,
+  className: PropTypes.string.isRequired,
+  config: PropTypes.object
+};
+
+Modal.defaultProps = {
+  config: null
+};
 
 export default Modal;

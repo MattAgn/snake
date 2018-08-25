@@ -6,7 +6,7 @@ import NextIcon from 'material-ui/svg-icons/navigation/arrow-forward';
 import PropTypes from 'prop-types';
 
 import { primaryColor } from '../../utilities/styling';
-import { Dialog, DialogTitle } from '../common/Dialog';
+import { StyledModal, ModalTitle } from '../common/StyledModal';
 
 import Button from './Button';
 
@@ -16,39 +16,33 @@ const GameOver = ({
   onClickRetry,
   onClickNextLevel,
   onClickSettings,
-  hasUnlockedLevel
+  hasUnlockedLevel,
+  isOpen
 }) => (
-  <StyledDialog>
-    <DialogTitle>
+  <GameOverModal isOpen={isOpen}>
+    <ModalTitle>
       {hasUnlockedLevel
         ? 'Congrats! You unlocked the next level!'
         : 'Game Over!'}
-    </DialogTitle>
+    </ModalTitle>
     <ScoresRow>
       <ScoreItem>Score: {score}</ScoreItem>
       <ScoreItem>High Score: {highScore}</ScoreItem>
     </ScoresRow>
     <ButtonContainer>
       {hasUnlockedLevel && (
-        <Button onClick={onClickNextLevel} isPrimary title="Next level">
-          <NextIcon color="#FFF" style={iconStyle} />
+        <Button onClick={onClickNextLevel} title="Next level">
+          <NextIcon color={primaryColor} style={iconStyle} />
         </Button>
       )}
-      <Button
-        onClick={onClickRetry}
-        isPrimary={!hasUnlockedLevel}
-        title="Retry"
-      >
-        <RetryIcon
-          color={hasUnlockedLevel ? primaryColor : '#FFF'}
-          style={iconStyle}
-        />
+      <Button onClick={onClickRetry} title="Retry">
+        <RetryIcon color={primaryColor} style={iconStyle} />
       </Button>
-      <Button onClick={onClickSettings} isPrimary={false} title="Options">
+      <Button onClick={onClickSettings} title="Options">
         <SettingsIcon color={primaryColor} style={iconStyle} />
       </Button>
     </ButtonContainer>
-  </StyledDialog>
+  </GameOverModal>
 );
 
 GameOver.propTypes = {
@@ -70,7 +64,7 @@ const iconStyle = {
   width: '100%'
 };
 
-const StyledDialog = styled(Dialog)`
+const GameOverModal = styled(StyledModal)`
   padding: 4% 5%;
   display: flex;
   flex-direction: column;
@@ -91,6 +85,7 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
   min-width: 40%;
+  flex-wrap: wrap;
 `;
 
 export default GameOver;

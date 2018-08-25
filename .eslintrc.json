@@ -8,6 +8,7 @@
     "comma-dangle": "off",
     "prettier/prettier": "error",
     "react/no-unused-prop-types": "off",
-    "no-use-before-define": "off"
+    "no-use-before-define": "off",
+    "react/forbid-prop-types": "off"
   }
 }

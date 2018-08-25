@@ -14,22 +14,24 @@ const StyledButton = styled.button`
   height: 120px;
   width: 120px;
   padding: 5%;
-  margin: 5% 7%;
+  margin: 5%;
   border-radius: 7px;
   border-style: solid;
   border-width: 3px;
   border-color: ${primaryColor};
-  background-color: ${props => (props.isPrimary ? primaryColor : '#FFF')};
-  color: ${props => (props.isPrimary ? '#FFF' : primaryColor)};
+  background-color: #fff;
+  color: ${primaryColor};
   ${elevation[3]};
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: ${tintColor};
     border-color: ${tintColor};
     ${elevation[4]};
     transition: box-shadow 300ms ease-in-out;
   }
-  &:hover :first-child {
-    fill: #fff;
+  &:hover :first-child,
+  &:focus:first-child {
+    fill: #fff !important;
   }
 `;
 

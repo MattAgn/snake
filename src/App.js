@@ -58,10 +58,10 @@ const App = () => (
               Use the arrow keys to move, and press the space bar to pause the
               game
             </Controls>
-
             {isGameOver && (
               <GameOver
                 {...scores}
+                isOpen={isGameOver}
                 onClickSettings={handleClickSettings}
                 onClickRetry={handleClickRetry}
               />

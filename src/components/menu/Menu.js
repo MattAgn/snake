@@ -2,32 +2,18 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
+import { config } from 'react-spring';
 // import PropTypes from 'prop-types';
 
 import { primaryColor } from '../../utilities/styling';
-import { Dialog, DialogTitle } from '../common/Dialog';
+import { StyledModal, ModalTitle } from '../common/StyledModal';
 
 import PlayerSetting from './PlayerSetting';
 import ModeSetting from './ModeSetting';
 import DifficultySetting from './DifficultySetting';
 import LevelsSetting from './LevelSetting';
 
-const PlayButtonRow = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-`;
-
-const styles = {
-  buttons: {
-    margin: '0 5%'
-  },
-  labelPlayButton: {
-    fontWeight: '400'
-  }
-};
-
-export default class Menu extends Component {
+class Menu extends Component {
   state = {
     difficultyButtonsBgColor: [],
     modeButtonsBgColor: { classic: '#FFF', levels: '#FFF' },
@@ -72,7 +58,8 @@ export default class Menu extends Component {
       handleClickMode,
       handleClickNbPlayers,
       settings,
-      highScores
+      highScores,
+      isMenuOpen
     } = this.props;
     const {
       modeButtonsBgColor,
@@ -81,8 +68,8 @@ export default class Menu extends Component {
       playersButtonsBgColor
     } = this.state;
     return (
-      <Dialog>
-        <DialogTitle>Snake Game</DialogTitle>
+      <StyledModal isOpen={isMenuOpen} config={config.slow}>
+        <ModalTitle>Snake Game</ModalTitle>
 
         <PlayerSetting
           onClickNbPlayers={handleClickNbPlayers}
@@ -117,7 +104,24 @@ export default class Menu extends Component {
             onClick={onClickSettings}
           />
         </PlayButtonRow>
-      </Dialog>
+      </StyledModal>
     );
   }
 }
+
+const PlayButtonRow = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+`;
+
+const styles = {
+  buttons: {
+    margin: '0 5%'
+  },
+  labelPlayButton: {
+    fontWeight: '400'
+  }
+};
+
+export default Menu;

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Modal } from '../../utilities/components';
 
-const Dialog = styled(Modal)`
+const StyledModal = styled(Modal)`
   padding: 3%;
   text-align: center;
   min-width: 34%;
@@ -11,8 +11,8 @@ const Dialog = styled(Modal)`
   position: relative;
 `;
 
-const DialogTitle = styled.h1`
+const ModalTitle = styled.h1`
   font-weight: 400;
 `;
 
-export { Dialog, DialogTitle };
+export { StyledModal, ModalTitle };
