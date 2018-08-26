@@ -1,6 +1,6 @@
-import GameElement from './GameElement';
+import GameElement from './GameElementModel';
 
-export default class SnakeBrain extends GameElement {
+class SnakeModel extends GameElement {
   constructor(squareSize) {
     super(squareSize);
     const coordinates = this.generateAvailableCoordinates('snake');
@@ -151,3 +151,5 @@ export default class SnakeBrain extends GameElement {
     return { targetEaten, hasLost };
   };
 }
+
+export default SnakeModel;

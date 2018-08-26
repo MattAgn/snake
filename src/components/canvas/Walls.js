@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { Rect } from 'react-konva';
 
+import WallsModel from '../../game-logic/WallsModel';
+
 class Walls extends Component {
+  static propTypes = {
+    walls: PropTypes.instanceOf(WallsModel).isRequired
+  };
+
   componentDidUpdate(prevProps) {
     if (prevProps.walls !== this.props.walls) {
       return true;
@@ -23,8 +29,7 @@ class Walls extends Component {
             width={walls.squareSize}
             fill="black"
           />
-        ))
-        }
+        ))}
       </React.Fragment>
     );
   }

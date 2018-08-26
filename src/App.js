@@ -5,10 +5,33 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { primaryColor } from './utilities/styling';
 
+import GameProvider from './GameProvider';
 import Header from './components/header/Header';
 import Canvas from './components/canvas/Canvas';
+import Menu from './components/menu/Menu';
 import GameOver from './components/game-over/GameOver';
-import GameLogic from './GameLogic';
+
+const App = () => (
+  <MuiThemeProvider muiTheme={muiTheme}>
+    <Fragment>
+      <GameProvider>
+        <Container>
+          <Header />
+
+          <Canvas />
+
+          <Controls>
+            Use the arrow keys to move, and press the space bar to pause the
+            game
+          </Controls>
+
+          {/* <Menu />
+          <GameOver /> */}
+        </Container>
+      </GameProvider>
+    </Fragment>
+  </MuiThemeProvider>
+);
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -30,47 +53,5 @@ const Controls = styled.h3`
   color: white;
   text-align: center;
 `;
-
-const App = () => (
-  <MuiThemeProvider muiTheme={muiTheme}>
-    <Fragment>
-      <GameLogic>
-        {({
-          scores,
-          gameElements,
-          settings,
-          handleClickRetry,
-          handleClickSettings,
-          isGameOver,
-          ...headerProps
-        }) => (
-          <Container>
-            <Header
-              {...headerProps}
-              {...scores}
-              settings={settings}
-              onClickSettings={handleClickSettings}
-            />
-
-            {gameElements && <Canvas {...gameElements} />}
-
-            <Controls>
-              Use the arrow keys to move, and press the space bar to pause the
-              game
-            </Controls>
-            {isGameOver && (
-              <GameOver
-                {...scores}
-                isOpen={isGameOver}
-                onClickSettings={handleClickSettings}
-                onClickRetry={handleClickRetry}
-              />
-            )}
-          </Container>
-        )}
-      </GameLogic>
-    </Fragment>
-  </MuiThemeProvider>
-);
 
 export default App;
