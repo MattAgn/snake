@@ -1,41 +1,37 @@
 import React, { Fragment } from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
 
-import { primaryColor } from '../../utilities/styling';
+import GameContext from '../../GameContext';
+
 import SettingRow from './SettingRow';
+import SettingButton from './SettingButton';
 
-const styles = {
-  buttons: {
-    margin: '0 5%'
-  }
-};
-
-const DifficultySetting = ({ handleClickDifficulty, buttonsBgColor }) => (
-  <SettingRow
-    settingName="Difficulty"
-    indication="Find your food in a map filled with random obstacles"
-  >
-    <Fragment>
-      <RaisedButton
-        label="Easy"
-        style={styles.buttons}
-        backgroundColor={buttonsBgColor[0]}
-        onClick={handleClickDifficulty(0)}
-      />
-      <RaisedButton
-        label="Medium"
-        backgroundColor={buttonsBgColor[1]}
-        style={styles.buttons}
-        onClick={handleClickDifficulty(1)}
-      />
-      <RaisedButton
-        label="Hell"
-        backgroundColor={buttonsBgColor[2]}
-        style={styles.buttons}
-        onClick={handleClickDifficulty(2)}
-      />
-    </Fragment>
-  </SettingRow>
+const DifficultySetting = () => (
+  <GameContext.Consumer>
+    {context => (
+      <SettingRow
+        settingName="Difficulty"
+        indication="Find your food in a map filled with random obstacles"
+      >
+        <Fragment>
+          <SettingButton
+            label="Easy"
+            onClick={context.handleClickDifficulty(0)}
+            isSelected={context.settings.difficulty === 0}
+          />
+          <SettingButton
+            label="Medium"
+            onClick={context.handleClickDifficulty(1)}
+            isSelected={context.settings.difficulty === 1}
+          />
+          <SettingButton
+            label="Hell"
+            onClick={context.handleClickDifficulty(2)}
+            isSelected={context.settings.difficulty === 2}
+          />
+        </Fragment>
+      </SettingRow>
+    )}
+  </GameContext.Consumer>
 );
 
 export default DifficultySetting;

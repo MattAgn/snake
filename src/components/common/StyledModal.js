@@ -2,10 +2,10 @@ import styled from 'styled-components';
 import { Modal } from '../../utilities/components';
 
 const StyledModal = styled(Modal)`
-  padding: 3%;
+  padding: 30px;
   text-align: center;
-  min-width: 34%;
-  max-width: 85vh;
+  min-width: 40vw;
+  max-width: 85vw;
   width: fit-content;
   height: fit-content;
   position: relative;

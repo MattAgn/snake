@@ -59,10 +59,10 @@ import LevelsSetting from './LevelSetting';
 const Menu = () => (
   <GameContext.Consumer>
     {context => (
-      <StyledModal isOpen={context.isMenuOpen} config={config.slow}>
+      <StyledModal isOpen={context.isMenuOpened} config={config.slow}>
         <ModalTitle>Snake Game</ModalTitle>
 
-        {/* <PlayerSetting />
+        <PlayerSetting />
 
         <ModeSetting />
 
@@ -80,7 +80,7 @@ const Menu = () => (
             labelStyle={styles.labelPlayButton}
             onClick={context.handleClickSettings}
           />
-        </PlayButtonRow> */}
+        </PlayButtonRow>
       </StyledModal>
     )}
   </GameContext.Consumer>

@@ -4,45 +4,43 @@ import SettingsIcon from 'material-ui/svg-icons/action/settings';
 import RetryIcon from 'material-ui/svg-icons/av/replay';
 import NextIcon from 'material-ui/svg-icons/navigation/arrow-forward';
 import PropTypes from 'prop-types';
+import { config } from 'react-spring';
 
 import { primaryColor } from '../../utilities/styling';
+import GameContext from '../../GameContext';
 import { StyledModal, ModalTitle } from '../common/StyledModal';
 
 import Button from './Button';
 
-const GameOver = ({
-  score,
-  highScore,
-  onClickRetry,
-  onClickNextLevel,
-  onClickSettings,
-  hasUnlockedLevel,
-  isOpen
-}) => (
-  <GameOverModal isOpen={isOpen}>
-    <ModalTitle>
-      {hasUnlockedLevel
-        ? 'Congrats! You unlocked the next level!'
-        : 'Game Over!'}
-    </ModalTitle>
-    <ScoresRow>
-      <ScoreItem>Score: {score}</ScoreItem>
-      <ScoreItem>High Score: {highScore}</ScoreItem>
-    </ScoresRow>
-    <ButtonContainer>
-      {hasUnlockedLevel && (
-        <Button onClick={onClickNextLevel} title="Next level">
-          <NextIcon color={primaryColor} style={iconStyle} />
-        </Button>
-      )}
-      <Button onClick={onClickRetry} title="Retry">
-        <RetryIcon color={primaryColor} style={iconStyle} />
-      </Button>
-      <Button onClick={onClickSettings} title="Options">
-        <SettingsIcon color={primaryColor} style={iconStyle} />
-      </Button>
-    </ButtonContainer>
-  </GameOverModal>
+const GameOver = () => (
+  <GameContext.Consumer>
+    {context => (
+      <GameOverModal isOpen={context.isGameOver} config={config.gentle}>
+        <ModalTitle>
+          {context.hasUnlockedLevel
+            ? 'Congrats! You unlocked the next level!'
+            : 'Game Over!'}
+        </ModalTitle>
+        <ScoresRow>
+          <ScoreItem>Score: {context.score}</ScoreItem>
+          <ScoreItem>High Score: {context.currentHighScore}</ScoreItem>
+        </ScoresRow>
+        <ButtonContainer>
+          {context.hasUnlockedLevel && (
+            <Button onClick={context.handleClickNextLevel} title="Next level">
+              <NextIcon color={primaryColor} style={iconStyle} />
+            </Button>
+          )}
+          <Button onClick={context.handleClickRetry} title="Retry">
+            <RetryIcon color={primaryColor} style={iconStyle} />
+          </Button>
+          <Button onClick={context.handleClickSettings} title="Options">
+            <SettingsIcon color={primaryColor} style={iconStyle} />
+          </Button>
+        </ButtonContainer>
+      </GameOverModal>
+    )}
+  </GameContext.Consumer>
 );
 
 GameOver.propTypes = {

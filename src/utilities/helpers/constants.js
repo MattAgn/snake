@@ -35,3 +35,5 @@ export const defaultHighScores = {
     }
   }
 };
+
+export const scoresNeeded = [70, 60, 50, 40, 40];

@@ -1,29 +1,26 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import { primaryColor } from '../../utilities/styling';
+import GameContext from '../../GameContext';
+
 import SettingRow from './SettingRow';
+import SettingButton from './SettingButton';
 
-const styles = {
-  buttons: {
-    margin: '0 5%'
-  }
-};
-
-const ModeSetting = ({ onClickMode, buttonsBgColor }) => (
-  <SettingRow settingName="Game Mode">
-    <RaisedButton
-      label="Classic"
-      style={styles.buttons}
-      backgroundColor={buttonsBgColor.classic}
-      onClick={onClickMode('classic')}
-    />
-    <RaisedButton
-      label="Levels"
-      style={styles.buttons}
-      backgroundColor={buttonsBgColor.levels}
-      onClick={onClickMode('levels')}
-    />
-  </SettingRow>
+const ModeSetting = () => (
+  <GameContext.Consumer>
+    {context => (
+      <SettingRow settingName="Game Mode">
+        <SettingButton
+          label="Classic"
+          onClick={context.handleClickMode('classic')}
+          isSelected={context.settings.mode === 'classic'}
+        />
+        <SettingButton
+          label="Levels"
+          onClick={context.handleClickMode('levels')}
+          isSelected={context.settings.mode === 'levels'}
+        />
+      </SettingRow>
+    )}
+  </GameContext.Consumer>
 );
 
 export default ModeSetting;

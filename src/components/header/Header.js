@@ -51,7 +51,7 @@ const Header = () => (
           <IconButton
             style={styles.button}
             iconStyle={styles.icon}
-            onClick={context.handleSettings}
+            onClick={context.handleClickSettings}
           >
             <SettingsIcon color={lightGrey} />
           </IconButton>

@@ -1,29 +1,27 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import { primaryColor } from '../../utilities/styling';
+
+import GameContext from '../../GameContext';
 import SettingRow from './SettingRow';
+import SettingButton from './SettingButton';
+import { primaryColor } from '../../utilities/styling';
 
-const styles = {
-  buttons: {
-    margin: '0 5%'
-  }
-};
-
-const PlayerSetting = ({ onClickNbPlayers, buttonsBgColor }) => (
-  <SettingRow settingName="Players Mode">
-    <RaisedButton
-      label="Solo"
-      style={styles.buttons}
-      backgroundColor={buttonsBgColor[1]}
-      onClick={onClickNbPlayers(1)}
-    />
-    <RaisedButton
-      label="Coop"
-      style={styles.buttons}
-      backgroundColor={buttonsBgColor[2]}
-      onClick={onClickNbPlayers(2)}
-    />
-  </SettingRow>
+const PlayerSetting = () => (
+  <GameContext.Consumer>
+    {context => (
+      <SettingRow settingName="Players Mode">
+        <SettingButton
+          label="Solo"
+          onClick={context.handleClickNbPlayers(1)}
+          isSelected={context.settings.nbPlayers === 1}
+        />
+        <SettingButton
+          label="Coop"
+          onClick={context.handleClickNbPlayers(2)}
+          isSelected={context.settings.nbPlayers === 2}
+        />
+      </SettingRow>
+    )}
+  </GameContext.Consumer>
 );
 
 export default PlayerSetting;

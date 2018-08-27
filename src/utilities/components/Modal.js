@@ -7,14 +7,16 @@ import { elevation, absolute, fillParent, flexCenter } from '../styling';
 
 import Portal from './Portal';
 
-const Modal = ({ className, isOpen, config }) => (
+const Modal = ({
+ children, className, isOpen, config 
+}) => (
   <Portal>
     <Transition
       native
       config={config}
       from={{ opacity: 0.2, bgOpacity: 0, y: '-50vh' }}
       enter={{ opacity: 1, bgOpacity: 0.6, y: '0px' }}
-      leave={{ opacity: 0.2, bgOpacity: 0, y: '50vh' }}
+      leave={{ opacity: 0, bgOpacity: 0, y: '-80vh' }}
     >
       {isOpen &&
         (styles => (
@@ -26,7 +28,7 @@ const Modal = ({ className, isOpen, config }) => (
                 transform: styles.y.interpolate(y => `translate3d(0, ${y},0)`)
               }}
             >
-              {this.props.children}
+              {children}
             </ModalContainer>
             <Background
               style={{
