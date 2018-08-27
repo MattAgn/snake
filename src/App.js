@@ -25,8 +25,8 @@ const App = () => (
             game
           </Controls>
 
-          {/* <Menu />
-          <GameOver /> */}
+          <Menu />
+          {/* <GameOver /> */}
         </Container>
       </GameProvider>
     </Fragment>

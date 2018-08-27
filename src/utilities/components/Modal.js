@@ -7,9 +7,7 @@ import { elevation, absolute, fillParent, flexCenter } from '../styling';
 
 import Portal from './Portal';
 
-const Modal = ({
- children, className, isOpen, config 
-}) => (
+const Modal = ({ className, isOpen, config }) => (
   <Portal>
     <Transition
       native
@@ -18,24 +16,25 @@ const Modal = ({
       enter={{ opacity: 1, bgOpacity: 0.6, y: '0px' }}
       leave={{ opacity: 0.2, bgOpacity: 0, y: '50vh' }}
     >
-      {styles => (
-        <ModalWrapper>
-          <ModalContainer
-            className={className}
-            style={{
-              opacity: styles.opacity.interpolate(opacity => opacity),
-              transform: styles.y.interpolate(y => `translate3d(0, ${y},0)`)
-            }}
-          >
-            {children}
-          </ModalContainer>
-          <Background
-            style={{
-              opacity: styles.bgOpacity.interpolate(bgOpacity => bgOpacity)
-            }}
-          />
-        </ModalWrapper>
-      )}
+      {isOpen &&
+        (styles => (
+          <ModalWrapper>
+            <ModalContainer
+              className={className}
+              style={{
+                opacity: styles.opacity.interpolate(opacity => opacity),
+                transform: styles.y.interpolate(y => `translate3d(0, ${y},0)`)
+              }}
+            >
+              {this.props.children}
+            </ModalContainer>
+            <Background
+              style={{
+                opacity: styles.bgOpacity.interpolate(bgOpacity => bgOpacity)
+              }}
+            />
+          </ModalWrapper>
+        ))}
     </Transition>
   </Portal>
 );
@@ -64,9 +63,9 @@ const Background = styled(animated.div)`
 `;
 
 Modal.propTypes = {
-  children: PropTypes.array.isRequired,
   className: PropTypes.string.isRequired,
-  config: PropTypes.object
+  config: PropTypes.object,
+  isOpen: PropTypes.bool.isRequired
 };
 
 Modal.defaultProps = {
