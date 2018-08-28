@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
+
 import GameContext from './GameContext';
 import Snake from './game-logic/SnakeModel';
 import Target from './game-logic/TargetModel';
 import Walls from './game-logic/WallsModel';
 import GameElement from './game-logic/GameElementModel';
-import { keyCodes, defaultHighScores } from './utilities/helpers/constants';
+import {
+  keyCodes,
+  defaultHighScores,
+  scoresNeeded
+} from './utilities/helpers/constants';
 
 //TODO: possibility to press space bar when menu opened to delete
 
 class GameProvider extends Component {
   constructor() {
     super();
-    const savedHighScores = localStorage.getItem('highScores');
+    const savedHighScores = null; //localStorage.getItem('highScores');
     //TODO: check highScore structure
     let highScores = savedHighScores
       ? JSON.parse(savedHighScores)
@@ -29,8 +34,9 @@ class GameProvider extends Component {
       }, //TODO: not very proper between levels and difficulty
       squareSize,
       highScores,
-      interval: null,
       score: 0,
+      unlockedLevels: null,
+      interval: null,
       currentHighScore: null,
       isGamePaused: true,
       isMenuOpened: true,
@@ -138,7 +144,8 @@ class GameProvider extends Component {
     }
     this.setState({
       gameElements: { walls, snakes, targets },
-      currentHighScore: this.getCurrentHighScore()
+      currentHighScore: this.getCurrentHighScore(),
+      unlockedLevels: this.getUnlockedLevels()
     });
   };
 
@@ -146,7 +153,8 @@ class GameProvider extends Component {
     const interval = setInterval(this.runGame, 140);
     this.setState({
       interval,
-      isGamePaused: false
+      isGamePaused: false,
+      hasUnlockedLevel: false
     });
     window.addEventListener('keydown', this.move);
   };
@@ -170,12 +178,44 @@ class GameProvider extends Component {
   };
 
   checkNewHighScore = () => {
-    let { highScores, gameElements, currentHighScore, score } = this.state;
+    let {
+      highScores,
+      gameElements,
+      currentHighScore,
+      score,
+      settings
+    } = this.state;
     const { snakes } = gameElements;
     if (score > currentHighScore) {
+      if (
+        settings.mode === 'levels' &&
+        highScores[settings.nbPlayers].levels[settings.difficulty] <
+          scoresNeeded[settings.difficulty] &&
+        score >= scoresNeeded[settings.levels]
+        // check if level has been unlocked
+      ) {
+        this.setState({ hasUnlockedLevel: true });
+      }
       highScores = this.setNewHighScores(score);
       localStorage.setItem('highScores', JSON.stringify(highScores));
     }
+  };
+
+  getUnlockedLevels = () => {
+    const { highScores, settings } = this.state;
+    const unlockedLevels = {
+      2: null,
+      3: null,
+      4: null,
+      5: null,
+      6: null
+    };
+    for (let i = 2; i < 7; i++) {
+      console.log(highScores[settings.nbPlayers].levels[i]);
+      unlockedLevels[i] =
+        highScores[settings.nbPlayers].levels[i] > scoresNeeded[i];
+    }
+    return unlockedLevels;
   };
 
   snakesNeedNewTargets = targetsEaten => {
@@ -225,7 +265,8 @@ class GameProvider extends Component {
       window.removeEventListener('keydown', this.move);
       window.addEventListener('keypress', this.onKeyPressRetry);
       this.pauseGame();
-      this.setState(() => ({ isGameOver: true }));
+      const unlockedLevels = this.getUnlockedLevels();
+      this.setState(() => ({ isGameOver: true, unlockedLevels }));
     } else {
       this.setState(() => ({ gameElements: { walls, snakes, targets } }));
     }

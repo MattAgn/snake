@@ -14,8 +14,8 @@ const LevelsSetting = () => (
         settingName="Levels"
         indication={
           context.settings.difficulty <= 5
-            ? unlockLevelAfter(scoresNeeded[context.settings.difficulty - 1])
-            : "Congrats you finished the game! But don't worry, new levels coming soon! "
+            ? unlockLevelAfter(scoresNeeded[context.settings.difficulty + 1])
+            : "Congrats you're one step away from finishing the game! But don't worry, new levels are coming soon! "
         }
       >
         <ButtonRow>
@@ -26,13 +26,13 @@ const LevelsSetting = () => (
           />
           <SettingButton
             label="2"
-            // disabled={!isLevelUnlocked(2, highScores)}
+            disabled={!context.unlockedLevels[2]}
             onClick={context.handleClickDifficulty(2)}
             isSelected={context.settings.difficulty === 2}
           />
           <SettingButton
             label="3"
-            // disabled={!isLevelUnlocked(3, highScores)}
+            disabled={!context.unlockedLevels[3]}
             onClick={context.handleClickDifficulty(3)}
             isSelected={context.settings.difficulty === 3}
           />
@@ -40,20 +40,19 @@ const LevelsSetting = () => (
         <ButtonRow>
           <SettingButton
             label="4"
-            // disabled={!isLevelUnlocked(4, highScores)}
+            disabled={!context.unlockedLevels[4]}
             onClick={context.handleClickDifficulty(4)}
             isSelected={context.settings.difficulty === 4}
           />
           <SettingButton
             label="5"
-            // disabled={!isLevelUnlocked(5, highScores)}
+            disabled={!context.unlockedLevels[5]}
             onClick={context.handleClickDifficulty(5)}
             isSelected={context.settings.difficulty === 5}
           />
           <SettingButton
             label="6"
-            // disabled={!isLevelUnlocked(6, highScores)}
-
+            disabled={!context.unlockedLevels[6]}
             onClick={context.handleClickDifficulty(6)}
             isSelected={context.settings.difficulty === 6}
           />

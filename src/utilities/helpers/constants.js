@@ -36,4 +36,10 @@ export const defaultHighScores = {
   }
 };
 
-export const scoresNeeded = [70, 60, 50, 40, 40];
+export const scoresNeeded = {
+  2: 10,
+  3: 60,
+  4: 50,
+  5: 40,
+  6: 40
+};
