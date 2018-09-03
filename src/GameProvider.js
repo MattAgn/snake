@@ -17,7 +17,6 @@ class GameProvider extends Component {
   constructor() {
     super();
     const savedHighScores = null; //localStorage.getItem('highScores');
-    //TODO: check highScore structure
     let highScores = savedHighScores
       ? JSON.parse(savedHighScores)
       : defaultHighScores;
@@ -30,12 +29,14 @@ class GameProvider extends Component {
       settings: {
         nbPlayers: 1,
         mode: 'classic',
-        difficulty: 1
-      }, //TODO: not very proper between levels and difficulty
+        difficulty: 1,
+        level: null
+      },
       squareSize,
       highScores,
       score: 0,
       unlockedLevels: null,
+      hasUnlockedLevel: false,
       interval: null,
       currentHighScore: null,
       isGamePaused: true,
@@ -44,12 +45,15 @@ class GameProvider extends Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.init();
     window.addEventListener('resize', this.updateSizeCanvas);
-  }
+  };
 
-  // EVENTS HANDLERS
+  /******************/
+  /* EVENT HANDLETS */
+  /******************/
+
   handleClickSettings = () => {
     if (this.state.isMenuOpened) {
       this.setState(
@@ -88,25 +92,32 @@ class GameProvider extends Component {
     }
   };
 
-  handleClickDifficulty = value => () => {
+  handleClickNbPlayers = e => {
     const { settings } = this.state;
-    settings.difficulty = value;
+    settings.nbPlayers = e.target.value;
+    settings.mode = 'classic';
+    settings.difficulty = 1;
     this.setState({ settings }, this.init);
   };
 
   //TODO: to factorise with above ?
-  handleClickMode = value => () => {
+  handleClickMode = e => {
     const { settings } = this.state;
-    settings.mode = value;
-    settings.difficulty = 1;
+    settings.mode = e.target.value;
+    if (e.target.value === 'levels') {
+      settings.level = this.getLastLevelUnlocked();
+      settings.difficulty = null;
+      console.log('level', settings.level);
+    } else {
+      settings.difficulty = 1;
+      settings.level = null;
+    }
     this.setState({ settings }, this.init);
   };
 
-  handleClickNbPlayers = value => () => {
+  handleClickDifficulty = e => {
     const { settings } = this.state;
-    settings.nbPlayers = value;
-    settings.mode = 'classic';
-    settings.difficulty = 1;
+    settings[e.target.name] = e.target.value;
     this.setState({ settings }, this.init);
   };
 
@@ -130,7 +141,9 @@ class GameProvider extends Component {
     });
   };
 
-  // GAME LOGIC
+  /******************/
+  /*** GAME LOGIC ***/
+  /******************/
 
   init = () => {
     const { squareSize, settings } = this.state;
@@ -216,6 +229,17 @@ class GameProvider extends Component {
         highScores[settings.nbPlayers].levels[i] > scoresNeeded[i];
     }
     return unlockedLevels;
+  };
+
+  getLastLevelUnlocked = () => {
+    let result = 1;
+    const { unlockedLevels } = this.state;
+    for (let i = 2; i < Object.keys(unlockedLevels).length + 1; i++) {
+      if (unlockedLevels[i]) {
+        result = i;
+      }
+    }
+    return result;
   };
 
   snakesNeedNewTargets = targetsEaten => {

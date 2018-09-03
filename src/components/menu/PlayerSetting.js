@@ -11,12 +11,14 @@ const PlayerSetting = () => (
       <SettingRow settingName="Players Mode">
         <SettingButton
           label="Solo"
-          onClick={context.handleClickNbPlayers(1)}
+          value={1}
+          onClick={context.handleClickNbPlayers}
           isSelected={context.settings.nbPlayers === 1}
         />
         <SettingButton
           label="Coop"
-          onClick={context.handleClickNbPlayers(2)}
+          value={2}
+          onClick={context.handleClickNbPlayers}
           isSelected={context.settings.nbPlayers === 2}
         />
       </SettingRow>

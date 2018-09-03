@@ -15,17 +15,23 @@ const DifficultySetting = () => (
         <Fragment>
           <SettingButton
             label="Easy"
-            onClick={context.handleClickDifficulty(0)}
+            value={0}
+            name="classic"
+            onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 0}
           />
           <SettingButton
             label="Medium"
-            onClick={context.handleClickDifficulty(1)}
+            value={1}
+            name="classic"
+            onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 1}
           />
           <SettingButton
             label="Hell"
-            onClick={context.handleClickDifficulty(2)}
+            value={2}
+            name="classic"
+            onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 2}
           />
         </Fragment>

@@ -10,12 +10,14 @@ const ModeSetting = () => (
       <SettingRow settingName="Game Mode">
         <SettingButton
           label="Classic"
-          onClick={context.handleClickMode('classic')}
+          value="classic"
+          onClick={context.handleClickMode}
           isSelected={context.settings.mode === 'classic'}
         />
         <SettingButton
           label="Levels"
-          onClick={context.handleClickMode('levels')}
+          value="levels"
+          onClick={context.handleClickMode}
           isSelected={context.settings.mode === 'levels'}
         />
       </SettingRow>

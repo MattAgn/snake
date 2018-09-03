@@ -21,39 +21,51 @@ const LevelsSetting = () => (
         <ButtonRow>
           <SettingButton
             label="1"
-            onClick={context.handleClickDifficulty(1)}
+            value={1}
+            name="level"
+            onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 1}
           />
           <SettingButton
             label="2"
+            value={2}
+            name="level"
             disabled={!context.unlockedLevels[2]}
-            onClick={context.handleClickDifficulty(2)}
+            onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 2}
           />
           <SettingButton
             label="3"
+            value={3}
+            name="level"
             disabled={!context.unlockedLevels[3]}
-            onClick={context.handleClickDifficulty(3)}
+            onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 3}
           />
         </ButtonRow>
         <ButtonRow>
           <SettingButton
             label="4"
+            value={4}
+            name="level"
             disabled={!context.unlockedLevels[4]}
-            onClick={context.handleClickDifficulty(4)}
+            onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 4}
           />
           <SettingButton
             label="5"
+            value={5}
+            name="level"
             disabled={!context.unlockedLevels[5]}
-            onClick={context.handleClickDifficulty(5)}
+            onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 5}
           />
           <SettingButton
             label="6"
+            value={6}
+            name="level"
             disabled={!context.unlockedLevels[6]}
-            onClick={context.handleClickDifficulty(6)}
+            onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 6}
           />
         </ButtonRow>
