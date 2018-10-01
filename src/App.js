@@ -5,10 +5,38 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
 import { primaryColor } from './utilities/styling';
 
+import GameProvider from './GameProvider';
 import Header from './components/header/Header';
 import Canvas from './components/canvas/Canvas';
+import Menu from './components/menu/Menu';
 import GameOver from './components/game-over/GameOver';
-import GameLogic from './GameLogic';
+
+const App = () => (
+  <MuiThemeProvider muiTheme={muiTheme}>
+    <Fragment>
+      <GameProvider>
+        <Container>
+          <Header />
+
+          <Canvas />
+
+          <div>
+            <Controls>
+              Use the arrow keys to move, and press "P" to pause the game.
+            </Controls>
+            <Controls>
+              If there is a second player, he can use the keys Z, Q, S, D to
+              move.
+            </Controls>
+          </div>
+
+          <Menu />
+          <GameOver />
+        </Container>
+      </GameProvider>
+    </Fragment>
+  </MuiThemeProvider>
+);
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -19,58 +47,17 @@ const muiTheme = getMuiTheme({
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   height: 100vh;
-  padding: 3%;
+  padding: 2%;
 `;
 
 const Controls = styled.h3`
   font-weight: 400;
   color: white;
   text-align: center;
+  margin: 0;
 `;
-
-const App = () => (
-  <MuiThemeProvider muiTheme={muiTheme}>
-    <Fragment>
-      <GameLogic>
-        {({
-          scores,
-          gameElements,
-          settings,
-          handleClickRetry,
-          handleClickSettings,
-          isGameOver,
-          ...headerProps
-        }) => (
-          <Container>
-            <Header
-              {...headerProps}
-              {...scores}
-              settings={settings}
-              onClickSettings={handleClickSettings}
-            />
-
-            {gameElements && <Canvas {...gameElements} />}
-
-            <Controls>
-              Use the arrow keys to move, and press the space bar to pause the
-              game
-            </Controls>
-            {isGameOver && (
-              <GameOver
-                {...scores}
-                isOpen={isGameOver}
-                onClickSettings={handleClickSettings}
-                onClickRetry={handleClickRetry}
-              />
-            )}
-          </Container>
-        )}
-      </GameLogic>
-    </Fragment>
-  </MuiThemeProvider>
-);
 
 export default App;

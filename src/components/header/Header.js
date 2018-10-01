@@ -1,15 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import SettingsIcon from 'material-ui/svg-icons/action/settings';
+import HomeIcon from 'material-ui/svg-icons/action/home';
 import IconButton from 'material-ui/IconButton';
 import PlayArrowIcon from 'material-ui/svg-icons/av/play-arrow';
 import PauseIcon from 'material-ui/svg-icons/av/pause';
 
 import { lightGrey, absolute } from '../../utilities/styling';
-import Menu from '../menu/Menu';
+import GameContext from '../../GameContext';
 
 function preventFocus(e) {
+  console.log('clicked button');
   e.preventDefault();
 }
 
@@ -28,60 +28,39 @@ function getMode(settings) {
   return '';
 }
 
-const Header = ({
-  score,
-  highScore,
-  highScores,
-  isGamePaused,
-  handlePauseGame,
-  onClickSettings,
-  settings,
-  isMenuOpened,
-  ...menuProps
-}) => (
-  <Row>
-    <Information>Score: {score}</Information>
-    <Information>
-      High Score: {highScore} {getMode(settings)}
-    </Information>
-    <ButtonsContainer>
-      <IconButton
-        style={styles.button}
-        iconStyle={styles.icon}
-        onClick={handlePauseGame}
-        onMouseDown={preventFocus}
-      >
-        {isGamePaused ? (
-          <PlayArrowIcon color={lightGrey} />
-        ) : (
-          <PauseIcon color={lightGrey} />
-        )}
-      </IconButton>
-      <IconButton
-        style={styles.button}
-        iconStyle={styles.icon}
-        onClick={onClickSettings}
-      >
-        <SettingsIcon color={lightGrey} />
-      </IconButton>
-    </ButtonsContainer>
-
-    {isMenuOpened && (
-      <Menu
-        {...menuProps}
-        settings={settings}
-        highScores={highScores}
-        onClickSettings={onClickSettings}
-      />
+const Header = () => (
+  <GameContext.Consumer>
+    {context => (
+      <Row>
+        <Information>Score: {context.score}</Information>
+        <Information>
+          High Score: {context.currentHighScore} {getMode(context.settings)}
+        </Information>
+        <ButtonsContainer>
+          <IconButton
+            style={styles.button}
+            iconStyle={styles.icon}
+            onClick={context.handlePauseGame}
+          >
+            {context.isGamePaused ? (
+              <PlayArrowIcon color={lightGrey} />
+            ) : (
+              <PauseIcon color={lightGrey} />
+            )}
+          </IconButton>
+          <IconButton
+            style={styles.button}
+            iconStyle={styles.icon}
+            onClick={context.handleClickSettings}
+            onKeyboardFocus={preventFocus}
+          >
+            <HomeIcon color={lightGrey} />
+          </IconButton>
+        </ButtonsContainer>
+      </Row>
     )}
-  </Row>
+  </GameContext.Consumer>
 );
-
-Header.propTypes = {
-  score: PropTypes.number.isRequired,
-  highScore: PropTypes.number.isRequired,
-  isMenuOpened: PropTypes.bool.isRequired
-};
 
 const Row = styled.div`
   display: flex;

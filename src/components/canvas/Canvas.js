@@ -1,51 +1,44 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Stage, Layer } from 'react-konva';
 import styled from 'styled-components';
+
+import GameElement from '../../game-logic/GameElementModel';
+import { primaryColor, secondaryColor } from '../../utilities/styling';
+import GameContext from '../../GameContext';
 
 import SnakeBody from './SnakeBody';
 import Target from './Target';
 import Walls from './Walls';
 
-import GameElement from '../../gameElements/GameElement';
-import SnakeElement from '../../gameElements/SnakeBrain';
-import WallsElement from '../../gameElements/Walls';
-import TargetElement from '../../gameElements/Target';
-import { primaryColor, secondaryColor } from '../../utilities/styling';
+const Canvas = () => {
+  const snakeColors = [primaryColor, secondaryColor];
+  return (
+    <GameContext.Consumer>
+      {context => (
+        <Background>
+          <Stage
+            width={context.squareSize * GameElement.NB_COLUMNS}
+            height={context.squareSize * GameElement.NB_ROWS}
+          >
+            {context.gameElements && (
+              <Layer>
+                {context.gameElements.targets.map(target => (
+                  <Target target={target} />
+                ))}
+                {context.gameElements.snakes.map((snake, index) => (
+                  <SnakeBody snake={snake} color={snakeColors[index]} />
+                ))}
+                <Walls walls={context.gameElements.walls} />
+              </Layer>
+            )}
+          </Stage>
+        </Background>
+      )}
+    </GameContext.Consumer>
+  );
+};
 
 const Background = styled.div`
   background-color: #424242;
 `;
-
-const Canvas = ({ snakes, walls, targets }) => {
-  let canvasHeight;
-  let canvasWidth;
-  if (snakes) {
-    canvasHeight = GameElement.NB_ROWS * snakes[0].squareSize;
-    canvasWidth = GameElement.NB_COLUMNS * snakes[0].squareSize;
-  }
-  const snakeColors = [primaryColor, secondaryColor];
-  return (
-    <Background>
-      <Stage width={canvasWidth} height={canvasHeight}>
-        <Layer>
-          {targets.map(target => <Target target={target} />)}
-          {snakes.map((snake, index) => (
-            <SnakeBody snake={snake} color={snakeColors[index]} />
-          ))}
-          <Walls walls={walls} />
-        </Layer>
-      </Stage>
-    </Background>
-  );
-};
-
-Canvas.propTypes = {
-  snakes: PropTypes.arrayOf(PropTypes.instanceOf(SnakeElement).isRequired)
-    .isRequired,
-  walls: PropTypes.instanceOf(WallsElement).isRequired,
-  targets: PropTypes.arrayOf(PropTypes.instanceOf(TargetElement).isRequired)
-    .isRequired
-};
-
 export default Canvas;

@@ -1,16 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { primaryColor } from '../../utilities/styling';
+// eslint-disable-next-line
+const SettingRow = ({ children, settingName, indication, className }) => (
+  <SettingRowContainer>
+    <SettingTitle> {settingName} </SettingTitle>
+    <ButtonRow className={className}>{children}</ButtonRow>
+    {indication && <Indication>{indication}</Indication>}
+  </SettingRowContainer>
+);
 
 const SettingRowContainer = styled.div`
   margin: 6% auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  &:last-of-type {
-    margin-bottom: 12%;
-  }
 `;
 
 const ButtonRow = styled.div`
@@ -26,13 +30,9 @@ const SettingTitle = styled.h3`
   margin-bottom: 1%;
 `;
 
-// eslint-disable-next-line
-const SettingRow = ({ children, settingName, indication, className }) => (
-  <SettingRowContainer>
-    <SettingTitle> {settingName} </SettingTitle>
-    <ButtonRow className={className}>{children}</ButtonRow>
-    {indication && <p>{indication}</p>}
-  </SettingRowContainer>
-);
+const Indication = styled.p`
+  margin-top: 10px;
+  max-width: 95%;
+`;
 
 export default SettingRow;

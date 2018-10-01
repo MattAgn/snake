@@ -1,6 +1,5 @@
 {
-  "plugins": ["prettier"],
-  "extends": "airbnb",
+  "extends": ["airbnb", "prettier"],
   "rules": {
     "react/jsx-filename-extension": "off",
     "no-underscore-dangle": "off",
@@ -9,6 +8,8 @@
     "prettier/prettier": "error",
     "react/no-unused-prop-types": "off",
     "no-use-before-define": "off",
-    "react/forbid-prop-types": "off"
+    "react/forbid-prop-types": "off",
+    "import/no-named-as-default-member": "off",
+    "import/no-named-as-default": "off"
   }
 }

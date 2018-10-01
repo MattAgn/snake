@@ -1,6 +1,6 @@
-import GameElement from './GameElement';
+import GameElement from './GameElementModel';
 
-class Target extends GameElement {
+class TargetModel extends GameElement {
   constructor(squareSize) {
     super(squareSize);
     const coordinates = this.generateAvailableCoordinates('target');
@@ -18,4 +18,4 @@ class Target extends GameElement {
   };
 }
 
-export default Target;
+export default TargetModel;
