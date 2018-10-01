@@ -9,8 +9,8 @@ import { lightGrey, absolute } from '../../utilities/styling';
 import GameContext from '../../GameContext';
 
 function preventFocus(e) {
-  console.log('clicked button');
   e.preventDefault();
+  // TODO: to redo
 }
 
 function getMode(settings) {

@@ -55,7 +55,6 @@ class GameProvider extends Component {
   /******************/
 
   handleClickSettings = () => {
-    console.log('settings clicked');
     if (this.state.isMenuOpened) {
       this.setState(
         {
@@ -74,10 +73,10 @@ class GameProvider extends Component {
     }
   };
 
-  // handleRetry = () => {
-  //   window.removeEventListener('keypress', this.onKeyPressRetry);
-  //   this.setState({ isGameOver: false }, this.generateNewGame);
-  // };
+  handleRetry = () => {
+    // window.removeEventListener('keypress', this.onKeyPressRetry);
+    this.setState({ isGameOver: false }, this.generateNewGame);
+  };
 
   // onKeyPressRetry = e => {
   //   if (e.keyCode === keyCodes.ENTER || e.which === keyCodes.ENTER) {
@@ -306,7 +305,6 @@ class GameProvider extends Component {
   };
 
   move = event => {
-    console.log(event.keyCode);
     let { snakes } = this.state.gameElements;
     switch (event.keyCode || event.which) {
       case keyCodes.RIGHT_PLAYER_DOWN:
