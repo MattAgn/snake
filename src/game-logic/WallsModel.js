@@ -5,7 +5,8 @@ class WallsModel extends GameElement {
     super(squareSize);
     this.wallsPerDifficulty = [0, 7, 15];
     let coordinatesList = [];
-    const { difficulty, mode, level } = settings;
+    const { difficulty, mode } = settings;
+    console.log(mode);
     if (mode === 'classic') {
       const nbWalls = this.wallsPerDifficulty[difficulty];
       for (let i = 0; i < nbWalls; i++) {
@@ -17,13 +18,16 @@ class WallsModel extends GameElement {
         };
         coordinatesList.push(wall);
       }
-    } else if (mode === 'levels') {
-      coordinatesList = levelsCoordinatesList[level].map((wall, index) => ({
-        id: index,
-        x: wall.x * squareSize,
-        y: wall.y * squareSize,
-        type: 'wall'
-      }));
+    } else if (mode === 'level') {
+      console.log('mode levelllll');
+      coordinatesList = levelsCoordinatesList[difficulty].map(
+        (wall, index) => ({
+          id: index,
+          x: wall.x * squareSize,
+          y: wall.y * squareSize,
+          type: 'wall'
+        })
+      );
     }
     const unavailableSquares = [].concat(coordinatesList);
     this.coordinatesList = coordinatesList;

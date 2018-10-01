@@ -11,12 +11,13 @@ import {
   scoresNeeded
 } from './utilities/helpers/constants';
 
-//TODO: possibility to press space bar when menu opened to delete
+// TODO: issue: possibility to press space bar when menu opened to delete
+// TODO: issue: sometimes, buttons in header are not clickable
 
 class GameProvider extends Component {
   constructor() {
     super();
-    const savedHighScores = null; //localStorage.getItem('highScores');
+    const savedHighScores = localStorage.getItem('highScores');
     let highScores = savedHighScores
       ? JSON.parse(savedHighScores)
       : defaultHighScores;
@@ -29,8 +30,7 @@ class GameProvider extends Component {
       settings: {
         nbPlayers: 1,
         mode: 'classic',
-        difficulty: 1,
-        level: null
+        difficulty: 1
       },
       squareSize,
       highScores,
@@ -55,6 +55,7 @@ class GameProvider extends Component {
   /******************/
 
   handleClickSettings = () => {
+    console.log('settings clicked');
     if (this.state.isMenuOpened) {
       this.setState(
         {
@@ -73,16 +74,16 @@ class GameProvider extends Component {
     }
   };
 
-  handleRetry = () => {
-    window.removeEventListener('keypress', this.onKeyPressRetry);
-    this.setState({ isGameOver: false }, this.generateNewGame);
-  };
+  // handleRetry = () => {
+  //   window.removeEventListener('keypress', this.onKeyPressRetry);
+  //   this.setState({ isGameOver: false }, this.generateNewGame);
+  // };
 
-  onKeyPressRetry = e => {
-    if (e.keyCode === keyCodes.ENTER || e.which === keyCodes.ENTER) {
-      this.handleRetry();
-    }
-  };
+  // onKeyPressRetry = e => {
+  //   if (e.keyCode === keyCodes.ENTER || e.which === keyCodes.ENTER) {
+  //     this.handleRetry();
+  //   }
+  // };
 
   handlePauseGame = () => {
     if (this.state.isGamePaused) {
@@ -94,7 +95,7 @@ class GameProvider extends Component {
 
   handleClickNbPlayers = e => {
     const { settings } = this.state;
-    settings.nbPlayers = e.target.value;
+    settings.nbPlayers = parseInt(e.target.value);
     settings.mode = 'classic';
     settings.difficulty = 1;
     this.setState({ settings }, this.init);
@@ -104,20 +105,17 @@ class GameProvider extends Component {
   handleClickMode = e => {
     const { settings } = this.state;
     settings.mode = e.target.value;
-    if (e.target.value === 'levels') {
-      settings.level = this.getLastLevelUnlocked();
-      settings.difficulty = null;
-      console.log('level', settings.level);
+    if (e.target.value === 'level') {
+      settings.difficulty = this.getLastLevelUnlocked();
     } else {
       settings.difficulty = 1;
-      settings.level = null;
     }
     this.setState({ settings }, this.init);
   };
 
   handleClickDifficulty = e => {
     const { settings } = this.state;
-    settings[e.target.name] = e.target.value;
+    settings[e.target.name] = parseInt(e.target.value);
     this.setState({ settings }, this.init);
   };
 
@@ -158,7 +156,9 @@ class GameProvider extends Component {
     this.setState({
       gameElements: { walls, snakes, targets },
       currentHighScore: this.getCurrentHighScore(),
-      unlockedLevels: this.getUnlockedLevels()
+      unlockedLevels: this.getUnlockedLevels(),
+      hasUnlockedLevel: false,
+      score: 0
     });
   };
 
@@ -201,10 +201,8 @@ class GameProvider extends Component {
     const { snakes } = gameElements;
     if (score > currentHighScore) {
       if (
-        settings.mode === 'levels' &&
-        highScores[settings.nbPlayers].levels[settings.difficulty] <
-          scoresNeeded[settings.difficulty] &&
-        score >= scoresNeeded[settings.levels]
+        settings.mode === 'level' &&
+        score >= scoresNeeded[settings.difficulty + 1]
         // check if level has been unlocked
       ) {
         this.setState({ hasUnlockedLevel: true });
@@ -224,9 +222,10 @@ class GameProvider extends Component {
       6: null
     };
     for (let i = 2; i < 7; i++) {
-      console.log(highScores[settings.nbPlayers].levels[i]);
+      const previousLevel = i - 1;
       unlockedLevels[i] =
-        highScores[settings.nbPlayers].levels[i] > scoresNeeded[i];
+        highScores[settings.nbPlayers]['level'][previousLevel] >=
+        scoresNeeded[i];
     }
     return unlockedLevels;
   };
@@ -290,7 +289,10 @@ class GameProvider extends Component {
       window.addEventListener('keypress', this.onKeyPressRetry);
       this.pauseGame();
       const unlockedLevels = this.getUnlockedLevels();
-      this.setState(() => ({ isGameOver: true, unlockedLevels }));
+      this.setState(() => ({
+        isGameOver: true,
+        unlockedLevels
+      }));
     } else {
       this.setState(() => ({ gameElements: { walls, snakes, targets } }));
     }
@@ -304,6 +306,7 @@ class GameProvider extends Component {
   };
 
   move = event => {
+    console.log(event.keyCode);
     let { snakes } = this.state.gameElements;
     switch (event.keyCode || event.which) {
       case keyCodes.RIGHT_PLAYER_DOWN:

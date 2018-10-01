@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import SettingsIcon from 'material-ui/svg-icons/action/settings';
+import HomeIcon from 'material-ui/svg-icons/action/home';
 import RetryIcon from 'material-ui/svg-icons/av/replay';
 import NextIcon from 'material-ui/svg-icons/navigation/arrow-forward';
 import PropTypes from 'prop-types';
@@ -34,8 +34,8 @@ const GameOver = () => (
           <Button onClick={context.handleClickRetry} title="Retry">
             <RetryIcon color={primaryColor} style={iconStyle} />
           </Button>
-          <Button onClick={context.handleClickSettings} title="Options">
-            <SettingsIcon color={primaryColor} style={iconStyle} />
+          <Button onClick={context.handleClickSettings} title="Menu">
+            <HomeIcon color={primaryColor} style={iconStyle} />
           </Button>
         </ButtonContainer>
       </GameOverModal>

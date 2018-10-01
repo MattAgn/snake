@@ -1,6 +1,6 @@
 export const keyCodes = {
   ENTER: 13,
-  PAUSE: 32,
+  PAUSE: 80,
   RIGHT_PLAYER_UP: 38,
   RIGHT_PLAYER_LEFT: 37,
   RIGHT_PLAYER_RIGHT: 39,
@@ -14,7 +14,7 @@ export const keyCodes = {
 export const defaultHighScores = {
   1: {
     classic: { 0: 0, 1: 0, 2: 0 },
-    levels: {
+    level: {
       1: 0,
       2: 0,
       3: 0,
@@ -25,7 +25,7 @@ export const defaultHighScores = {
   },
   2: {
     classic: { 0: 0, 1: 0, 2: 0 },
-    levels: {
+    level: {
       1: 0,
       2: 0,
       3: 0,
@@ -37,7 +37,7 @@ export const defaultHighScores = {
 };
 
 export const scoresNeeded = {
-  2: 10,
+  2: 70,
   3: 60,
   4: 50,
   5: 40,

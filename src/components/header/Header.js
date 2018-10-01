@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import SettingsIcon from 'material-ui/svg-icons/action/settings';
+import HomeIcon from 'material-ui/svg-icons/action/home';
 import IconButton from 'material-ui/IconButton';
 import PlayArrowIcon from 'material-ui/svg-icons/av/play-arrow';
 import PauseIcon from 'material-ui/svg-icons/av/pause';
@@ -9,6 +9,7 @@ import { lightGrey, absolute } from '../../utilities/styling';
 import GameContext from '../../GameContext';
 
 function preventFocus(e) {
+  console.log('clicked button');
   e.preventDefault();
 }
 
@@ -40,7 +41,6 @@ const Header = () => (
             style={styles.button}
             iconStyle={styles.icon}
             onClick={context.handlePauseGame}
-            onMouseDown={preventFocus}
           >
             {context.isGamePaused ? (
               <PlayArrowIcon color={lightGrey} />
@@ -52,8 +52,9 @@ const Header = () => (
             style={styles.button}
             iconStyle={styles.icon}
             onClick={context.handleClickSettings}
+            onKeyboardFocus={preventFocus}
           >
-            <SettingsIcon color={lightGrey} />
+            <HomeIcon color={lightGrey} />
           </IconButton>
         </ButtonsContainer>
       </Row>

@@ -16,21 +16,21 @@ const DifficultySetting = () => (
           <SettingButton
             label="Easy"
             value={0}
-            name="classic"
+            name="difficulty"
             onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 0}
           />
           <SettingButton
             label="Medium"
             value={1}
-            name="classic"
+            name="difficulty"
             onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 1}
           />
           <SettingButton
             label="Hell"
             value={2}
-            name="classic"
+            name="difficulty"
             onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 2}
           />

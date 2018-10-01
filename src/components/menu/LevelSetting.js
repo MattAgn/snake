@@ -22,14 +22,14 @@ const LevelsSetting = () => (
           <SettingButton
             label="1"
             value={1}
-            name="level"
+            name="difficulty"
             onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 1}
           />
           <SettingButton
             label="2"
             value={2}
-            name="level"
+            name="difficulty"
             disabled={!context.unlockedLevels[2]}
             onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 2}
@@ -37,7 +37,7 @@ const LevelsSetting = () => (
           <SettingButton
             label="3"
             value={3}
-            name="level"
+            name="difficulty"
             disabled={!context.unlockedLevels[3]}
             onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 3}
@@ -47,7 +47,7 @@ const LevelsSetting = () => (
           <SettingButton
             label="4"
             value={4}
-            name="level"
+            name="difficulty"
             disabled={!context.unlockedLevels[4]}
             onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 4}
@@ -55,7 +55,7 @@ const LevelsSetting = () => (
           <SettingButton
             label="5"
             value={5}
-            name="level"
+            name="difficulty"
             disabled={!context.unlockedLevels[5]}
             onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 5}
@@ -63,7 +63,7 @@ const LevelsSetting = () => (
           <SettingButton
             label="6"
             value={6}
-            name="level"
+            name="difficulty"
             disabled={!context.unlockedLevels[6]}
             onClick={context.handleClickDifficulty}
             isSelected={context.settings.difficulty === 6}

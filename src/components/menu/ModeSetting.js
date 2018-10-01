@@ -16,9 +16,9 @@ const ModeSetting = () => (
         />
         <SettingButton
           label="Levels"
-          value="levels"
+          value="level"
           onClick={context.handleClickMode}
-          isSelected={context.settings.mode === 'levels'}
+          isSelected={context.settings.mode === 'level'}
         />
       </SettingRow>
     )}

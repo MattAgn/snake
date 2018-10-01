@@ -20,10 +20,15 @@ const App = () => (
 
           <Canvas />
 
-          <Controls>
-            Use the arrow keys to move, and press the space bar to pause the
-            game
-          </Controls>
+          <div>
+            <Controls>
+              Use the arrow keys to move, and press "P" to pause the game.
+            </Controls>
+            <Controls>
+              If there is a second player, he can use the keys Z, Q, S, D to
+              move.
+            </Controls>
+          </div>
 
           <Menu />
           <GameOver />
@@ -42,16 +47,17 @@ const muiTheme = getMuiTheme({
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   height: 100vh;
-  padding: 3%;
+  padding: 2%;
 `;
 
 const Controls = styled.h3`
   font-weight: 400;
   color: white;
   text-align: center;
+  margin: 0;
 `;
 
 export default App;
