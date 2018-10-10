@@ -17,7 +17,7 @@ import {
 class GameProvider extends Component {
   constructor() {
     super();
-    const savedHighScores = localStorage.getItem('highScores');
+    const savedHighScores = null; //TODO:localStorage.getItem('highScores');
     let highScores = savedHighScores
       ? JSON.parse(savedHighScores)
       : defaultHighScores;
@@ -73,8 +73,15 @@ class GameProvider extends Component {
     }
   };
 
+  handleClickNextLevel = () => {
+    const nextLevel = this.getLastLevelUnlocked();
+    const { settings } = this.state;
+    settings.difficulty = nextLevel;
+    this.setState({ settings, isGameOver: false }, this.generateNewGame);
+  };
+
   handleRetry = () => {
-    // window.removeEventListener('keypress', this.onKeyPressRetry);
+    // windocodew.removeEventListener('keypress', this.onKeyPressRetry);
     this.setState({ isGameOver: false }, this.generateNewGame);
   };
 
@@ -92,19 +99,19 @@ class GameProvider extends Component {
     }
   };
 
-  handleClickNbPlayers = e => {
+  handleClickNbPlayers = value => () => {
     const { settings } = this.state;
-    settings.nbPlayers = parseInt(e.target.value);
+    settings.nbPlayers = parseInt(value);
     settings.mode = 'classic';
     settings.difficulty = 1;
     this.setState({ settings }, this.init);
   };
 
   //TODO: to factorise with above ?
-  handleClickMode = e => {
+  handleClickMode = value => () => {
     const { settings } = this.state;
-    settings.mode = e.target.value;
-    if (e.target.value === 'level') {
+    settings.mode = value;
+    if (value === 'level') {
       settings.difficulty = this.getLastLevelUnlocked();
     } else {
       settings.difficulty = 1;
@@ -112,9 +119,9 @@ class GameProvider extends Component {
     this.setState({ settings }, this.init);
   };
 
-  handleClickDifficulty = e => {
+  handleClickDifficulty = value => () => {
     const { settings } = this.state;
-    settings[e.target.name] = parseInt(e.target.value);
+    settings.difficulty = parseInt(value);
     this.setState({ settings }, this.init);
   };
 
@@ -177,6 +184,7 @@ class GameProvider extends Component {
   };
 
   getCurrentHighScore = () => {
+    console.log(this.state.settings);
     const { nbPlayers, mode, difficulty } = this.state.settings;
     return this.state.highScores[nbPlayers][mode][difficulty];
   };
@@ -190,18 +198,12 @@ class GameProvider extends Component {
   };
 
   checkNewHighScore = () => {
-    let {
-      highScores,
-      gameElements,
-      currentHighScore,
-      score,
-      settings
-    } = this.state;
-    const { snakes } = gameElements;
+    let { highScores, currentHighScore, score, settings } = this.state;
     if (score > currentHighScore) {
       if (
         settings.mode === 'level' &&
-        score >= scoresNeeded[settings.difficulty + 1]
+        score >= scoresNeeded[settings.difficulty + 1] &&
+        currentHighScore < scoresNeeded[settings.difficulty + 1]
         // check if level has been unlocked
       ) {
         this.setState({ hasUnlockedLevel: true });
@@ -284,9 +286,9 @@ class GameProvider extends Component {
       targets = this.snakesNeedNewTargets(targetsEaten);
     }
     if (havePlayersLost) {
+      this.pauseGame();
       window.removeEventListener('keydown', this.move);
       window.addEventListener('keypress', this.onKeyPressRetry);
-      this.pauseGame();
       const unlockedLevels = this.getUnlockedLevels();
       this.setState(() => ({
         isGameOver: true,
@@ -356,7 +358,8 @@ class GameProvider extends Component {
           handleClickDifficulty: this.handleClickDifficulty,
           handleClickSettings: this.handleClickSettings,
           handleClickMode: this.handleClickMode,
-          handleClickNbPlayers: this.handleClickNbPlayers
+          handleClickNbPlayers: this.handleClickNbPlayers,
+          handleClickNextLevel: this.handleClickNextLevel
         }}
       >
         {this.props.children}

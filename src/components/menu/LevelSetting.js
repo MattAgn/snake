@@ -21,51 +21,51 @@ const LevelsSetting = () => (
         <ButtonRow>
           <SettingButton
             label="1"
-            value={1}
+            // value={1}
             name="difficulty"
-            onClick={context.handleClickDifficulty}
+            onClick={context.handleClickDifficulty(1)}
             isSelected={context.settings.difficulty === 1}
           />
           <SettingButton
             label="2"
-            value={2}
+            // value={2}
             name="difficulty"
             disabled={!context.unlockedLevels[2]}
-            onClick={context.handleClickDifficulty}
+            onClick={context.handleClickDifficulty(2)}
             isSelected={context.settings.difficulty === 2}
           />
           <SettingButton
             label="3"
-            value={3}
+            // value={3}
             name="difficulty"
             disabled={!context.unlockedLevels[3]}
-            onClick={context.handleClickDifficulty}
+            onClick={context.handleClickDifficulty(3)}
             isSelected={context.settings.difficulty === 3}
           />
         </ButtonRow>
         <ButtonRow>
           <SettingButton
             label="4"
-            value={4}
+            // value={4}
             name="difficulty"
             disabled={!context.unlockedLevels[4]}
-            onClick={context.handleClickDifficulty}
+            onClick={context.handleClickDifficulty(4)}
             isSelected={context.settings.difficulty === 4}
           />
           <SettingButton
             label="5"
-            value={5}
+            // value={5}
             name="difficulty"
             disabled={!context.unlockedLevels[5]}
-            onClick={context.handleClickDifficulty}
+            onClick={context.handleClickDifficulty(5)}
             isSelected={context.settings.difficulty === 5}
           />
           <SettingButton
             label="6"
-            value={6}
+            // value={6}
             name="difficulty"
             disabled={!context.unlockedLevels[6]}
-            onClick={context.handleClickDifficulty}
+            onClick={context.handleClickDifficulty(5)}
             isSelected={context.settings.difficulty === 6}
           />
         </ButtonRow>

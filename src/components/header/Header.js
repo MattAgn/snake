@@ -16,13 +16,13 @@ function preventFocus(e) {
 function getMode(settings) {
   if (settings.mode === 'classic') {
     if (settings.difficulty === 0) {
-      return '( Easy )';
+      return '( Classic: Easy )';
     } else if (settings.difficulty === 1) {
-      return '( Medium )';
+      return '( Classic: Medium )';
     } else if (settings.difficulty === 2) {
-      return '( Hell )';
+      return '( Classic: Hell )';
     }
-  } else if (settings.mode === 'levels') {
+  } else if (settings.mode === 'level') {
     return `( Level ${settings.difficulty} )`;
   }
   return '';

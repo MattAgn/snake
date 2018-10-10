@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-
 import GameContext from '../../GameContext';
 
 import SettingRow from './SettingRow';
@@ -15,23 +14,23 @@ const DifficultySetting = () => (
         <Fragment>
           <SettingButton
             label="Easy"
-            value={0}
+            // value={0}
             name="difficulty"
-            onClick={context.handleClickDifficulty}
+            onClick={context.handleClickDifficulty(0)}
             isSelected={context.settings.difficulty === 0}
           />
           <SettingButton
             label="Medium"
             value={1}
             name="difficulty"
-            onClick={context.handleClickDifficulty}
+            onClick={context.handleClickDifficulty(1)}
             isSelected={context.settings.difficulty === 1}
           />
           <SettingButton
             label="Hell"
-            value={2}
+            // value={2}
             name="difficulty"
-            onClick={context.handleClickDifficulty}
+            onClick={context.handleClickDifficulty(2)}
             isSelected={context.settings.difficulty === 2}
           />
         </Fragment>
