@@ -36,18 +36,10 @@ export const defaultHighScores = {
   }
 };
 
-// export const scoresNeeded = {
-//   2: 70,
-//   3: 60,
-//   4: 50,
-//   5: 40,
-//   6: 40
-// };
-
 export const scoresNeeded = {
-  2: 15,
-  3: 1,
-  4: 1,
-  5: 1,
-  6: 1
+  2: 70,
+  3: 60,
+  4: 50,
+  5: 40,
+  6: 40
 };

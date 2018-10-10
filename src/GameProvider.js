@@ -17,7 +17,7 @@ import {
 class GameProvider extends Component {
   constructor() {
     super();
-    const savedHighScores = null; //TODO:localStorage.getItem('highScores');
+    const savedHighScores = localStorage.getItem('highScores');
     let highScores = savedHighScores
       ? JSON.parse(savedHighScores)
       : defaultHighScores;
